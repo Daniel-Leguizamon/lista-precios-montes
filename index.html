@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Lista de Precios - Montes</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        background-color: #fafafa;
+        margin: 0;
+        padding: 20px;
+        color: #333;
+    }
+
+    h1 {
+        text-align: center;
+        margin-bottom: 20px;
+    }
+
+    .container {
+        max-width: 900px;
+        margin: auto;
+        background: white;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+
+    .filters {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+        gap: 10px;
+        margin-bottom: 20px;
+    }
+
+    select, input {
+        padding: 10px;
+        font-size: 16px;
+        width: 48%;
+        border-radius: 6px;
+        border: 1px solid #aaa;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 15px;
+    }
+
+    th {
+        background: #333;
+        color: white;
+        padding: 10px;
+        text-align: left;
+    }
+
+    td {
+        padding: 8px;
+        border-bottom: 1px solid #ddd;
+    }
+
+    tr:hover {
+        background: #f2f2f2;
+    }
+
+    @media (max-width: 600px) {
+        select, input {
+            width: 100%;
+        }
+    }
+</style>
+</head>
+<body>
+
+<h1>Lista de Precios • Montes</h1>
+
+<div class="container">
+
+    <div class="filters">
+        <input type="text" id="buscar" placeholder="Buscar producto...">
+        <select id="filtroRubro">
+            <option value="todos">Todos los rubros</option>
+        </select>
+    </div>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Producto</th>
+                <th>Rubro</th>
+                <th>Precio</th>
+            </tr>
+        </thead>
+        <tbody id="tabla">
+        </tbody>
+    </table>
+
+</div>
+
+<script>
+    let datos = [];
+
+    async function cargarCSV() {
+        const response = await fetch("./lista_precios.csv");
+        const texto = await response.text();
+
+        let lineas = texto.split("\n").map(l => l.trim());
+
+        // Ignoramos encabezado
+        for (let i = 1; i < lineas.length; i++) {
+            if (!lineas[i]) continue;
+            let cols = lineas[i].split(";");
+
+            let descripcion = cols[0]?.trim() || "";
+            let rubro = cols[1]?.trim() || "";
+            let precio = cols[2]?.trim() || "";
+
+            // Arreglo rubro “no encontrado” → Cervezas
+            if (rubro.toLowerCase().includes("no encontrado")) {
+                rubro = "Cervezas";
+            }
+
+            datos.push({ descripcion, rubro, precio });
+        }
+
+        cargarRubros();
+        mostrarTabla(datos);
+    }
+
+    function cargarRubros() {
+        let select = document.getElementById("filtroRubro");
+
+        let rubros = [...new Set(datos.map(d => d.rubro))].sort();
+
+        rubros.forEach(r => {
+            let option = document.createElement("option");
+            option.value = r;
+            option.textContent = r;
+            select.appendChild(option);
+        });
+    }
+
+    function mostrarTabla(lista) {
+        let tabla = document.getElementById("tabla");
+        tabla.innerHTML = "";
+
+        lista.forEach(item => {
+            let tr = document.createElement("tr");
+
+            let precioFormateado = "$ " + Number(item.precio).toLocaleString("es-AR");
+
+            tr.innerHTML = `
+                <td>${item.descripcion}</td>
+                <td>${item.rubro}</td>
+                <td>${precioFormateado}</td>
+            `;
+
+            tabla.appendChild(tr);
+        });
+    }
+
+    document.getElementById("buscar").addEventListener("input", filtrar);
+    document.getElementById("filtroRubro").addEventListener("change", filtrar);
+
+    function filtrar() {
+        let texto = document.getElementById("buscar").value.toLowerCase();
+        let rubro = document.getElementById("filtroRubro").value;
+
+        let filtrados = datos.filter(item =>
+            (rubro === "todos" || item.rubro === rubro) &&
+            item.descripcion.toLowerCase().includes(texto)
+        );
+
+        mostrarTabla(filtrados);
+    }
+
+    cargarCSV();
+</script>
+
+</body>
+</html>
