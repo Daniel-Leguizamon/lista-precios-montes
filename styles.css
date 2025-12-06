@@ -4,10 +4,20 @@
 
 body {
     font-family: Arial, sans-serif;
-    background: radial-gradient(circle at top, #262626 0, #101010 45%, #050505 100%);
     margin: 0;
     padding: 24px;
     color: #eee;
+
+    /* Fondo oscuro + textura suave */
+    background:
+        radial-gradient(circle at top, #262626 0, #101010 45%, #050505 100%),
+        repeating-linear-gradient(
+            45deg,
+            rgba(255,255,255,0.02) 0,
+            rgba(255,255,255,0.02) 2px,
+            rgba(0,0,0,0.02) 2px,
+            rgba(0,0,0,0.02) 4px
+        );
 }
 
 /* ---------------------- */
@@ -19,9 +29,33 @@ body {
     margin: auto;
     background: #181818;
     padding: 24px 24px 28px;
-    border-radius: 14px;
-    box-shadow: 0 18px 45px rgba(0,0,0,0.7);
-    border: 1px solid #2a2a2a;
+    border-radius: 16px;
+    box-shadow: 0 18px 45px rgba(0,0,0,0.8);
+    border: 2px solid #d4a94a;
+
+    /* Glow dorado + animación respirando */
+    box-shadow:
+        0 0 30px rgba(212, 169, 74, 0.35),
+        0 0 14px rgba(0, 0, 0, 0.9);
+    animation: goldPulse 8s infinite ease-in-out;
+}
+
+@keyframes goldPulse {
+    0% {
+        box-shadow:
+            0 0 26px rgba(212, 169, 74, 0.32),
+            0 0 14px rgba(0, 0, 0, 0.9);
+    }
+    50% {
+        box-shadow:
+            0 0 40px rgba(212, 169, 74, 0.55),
+            0 0 18px rgba(0, 0, 0, 1);
+    }
+    100% {
+        box-shadow:
+            0 0 26px rgba(212, 169, 74, 0.32),
+            0 0 14px rgba(0, 0, 0, 0.9);
+    }
 }
 
 /* ---------------------- */
@@ -31,18 +65,16 @@ body {
 .header {
     display: flex;
     align-items: center;
-    justify-content: center;   /* 👈 NUEVO */
+    justify-content: center;
     gap: 14px;
-    margin-bottom: 18px;
-    border-bottom: 3px solid #d4a94a;
-    padding-bottom: 12px;
     margin-bottom: 20px;
-    text-align: center;        /* 👈 NUEVO (para el h1) */
+    padding-bottom: 12px;
+    border-bottom: 3px solid #d4a94a;
+    text-align: center;
 }
 
-
 .logo {
-    height: 54px;        /* si la querés más chica, bajá a 46 o 40 */
+    height: 54px;
     width: auto;
     display: block;
     border-radius: 6px;
@@ -51,9 +83,12 @@ body {
 .header h1 {
     margin: 0;
     font-size: 24px;
-    font-weight: 600;
+    font-weight: 700;
     letter-spacing: 0.5px;
-    color: #f5f5f5;
+    color: #f7e4b0;
+    text-shadow:
+        0 0 12px rgba(212, 169, 74, 0.7),
+        0 0 4px rgba(212, 169, 74, 0.6);
 }
 
 /* ---------------------- */
@@ -77,7 +112,11 @@ body {
     background: #121212;
     color: #f0f0f0;
     box-shadow: 0 0 0 rgba(0,0,0,0);
-    transition: border-color 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
+    transition:
+        border-color 0.2s ease,
+        box-shadow 0.2s ease,
+        background 0.2s ease,
+        transform 0.12s ease;
 }
 
 .filters input::placeholder {
@@ -87,9 +126,10 @@ body {
 .filters input:focus,
 .filters select:focus {
     outline: none;
-    border-color: #d4a94a;
-    box-shadow: 0 0 0 1px #d4a94a55;
+    border-color: #f1c75a;
+    box-shadow: 0 0 10px rgba(241, 199, 90, 0.8);
     background: #151515;
+    transform: translateY(-1px);
 }
 
 .filters input {
@@ -112,11 +152,11 @@ table {
 }
 
 th {
-    background: linear-gradient(90deg, #2b2b2b, #202020);
-    color: #f5f5f5;
+    background: linear-gradient(90deg, #4a3b1a, #2e2412);
+    color: #f6eac2;
     padding: 10px;
     text-align: left;
-    border-bottom: 1px solid #3c3c3c;
+    border-bottom: 3px solid #d4a94a;
     font-weight: 600;
 }
 
@@ -134,46 +174,70 @@ tbody tr:nth-child(even) {
     background: #1c1c1c;
 }
 
-tbody tr:hover {
-    background: #252525;
+/* Hover dorado + leve movimiento (punto 7) */
+tbody tr {
+    transition:
+        background 0.15s ease,
+        box-shadow 0.15s ease,
+        transform 0.12s ease;
 }
 
-/* Precio alineado a la derecha */
+tbody tr:hover {
+    background: #3a301c;
+    box-shadow: inset 0 0 8px rgba(212, 169, 74, 0.4);
+    transform: translateY(-1px);
+}
+
+/* Precio alineado y destacado */
 td:last-child,
 th:last-child {
     text-align: right;
 }
 
+td:last-child {
+    color: #f2d68a;
+    font-weight: 600;
+}
+
 /* ---------------------- */
-/* RESPONSIVE */
+/* RESPONSIVE (CELULAR)   */
 /* ---------------------- */
 
 @media (max-width: 700px) {
+    /* menos margen alrededor */
     body {
-        padding: 12px;
+        padding: 10px;
     }
 
+    /* la caja ocupa casi toda la pantalla pero sin pegarse a los bordes */
     .container {
-        padding: 18px 14px 22px;
-        border-radius: 12px;
+        padding: 16px 12px 20px;
+        border-radius: 14px;
+        margin: 0 auto;
     }
 
+    /* header centrado y más compacto */
     .header {
         flex-direction: column;
-        align-items: flex-start;
+        align-items: center;
+        justify-content: center;
         gap: 6px;
+        padding-bottom: 10px;
+        margin-bottom: 14px;
+    }
+
+    .logo {
+        height: 42px;
     }
 
     .header h1 {
         font-size: 20px;
     }
 
-    .logo {
-        height: 48px;
-    }
-
+    /* filtros uno abajo del otro */
     .filters {
         flex-direction: column;
+        gap: 8px;
     }
 
     .filters input,
@@ -181,60 +245,14 @@ th:last-child {
         width: 100%;
     }
 
+    /* tabla más compacta para que entre todo mejor */
     table {
-        font-size: 13px;
+        font-size: 12px;
+    }
+
+    th,
+    td {
+        padding: 7px 6px;
     }
 }
-/* ---------------------- */
-/* ORO PREMIUM EDITION 🍷 */
-/* ---------------------- */
 
-/* Caja principal con borde y glow dorado */
-.container {
-    border: 2px solid #d4a94a;
-    box-shadow: 0 0 30px rgba(212, 169, 74, 0.35),
-                0 0 10px rgba(212, 169, 74, 0.15) inset;
-}
-
-/* Header con banda dorada */
-.header {
-    border-bottom: 3px solid #d4a94a;
-    padding-bottom: 12px;
-    margin-bottom: 20px;
-}
-
-/* Título estilo etiqueta de vino */
-.header h1 {
-    color: #f7e4b0;
-    text-shadow: 0 0 12px rgba(212, 169, 74, 0.7),
-                 0 0 4px rgba(212, 169, 74, 0.6);
-    font-weight: 700;
-}
-
-
-
-/* Inputs con borde dorado al foco */
-.filters input:focus,
-.filters select:focus {
-    border-color: #f1c75a;
-    box-shadow: 0 0 10px rgba(241, 199, 90, 0.8);
-}
-
-/* Encabezado de tabla con dorado más visible */
-th {
-    background: linear-gradient(90deg, #4a3b1a, #2e2412);
-    border-bottom: 3px solid #d4a94a;
-    color: #f6eac2;
-}
-
-/* Hover dorado fuerte */
-tbody tr:hover {
-    background: #3a301c;
-    box-shadow: inset 0 0 8px rgba(212, 169, 74, 0.4);
-}
-
-/* Precio destacado */
-td:last-child {
-    color: #f2d68a;
-    font-weight: 600;
-}
