@@ -182,40 +182,65 @@ th:last-child {
     }
 }
 /* ---------------------- */
-/* TOQUES DORADOS PREMIUM */
+/* ORO PREMIUM EDITION 🍷 */
 /* ---------------------- */
 
-/* Borde suave dorado alrededor del contenedor */
+/* Caja principal con borde y glow dorado */
 .container {
-    border: 1px solid #4a3a12;
-    box-shadow: 0 0 25px rgba(212, 169, 74, 0.08);
+    border: 2px solid #d4a94a;
+    box-shadow: 0 0 30px rgba(212, 169, 74, 0.35),
+                0 0 10px rgba(212, 169, 74, 0.15) inset;
 }
 
-/* Línea dorada bajo el header */
+/* Header con banda dorada */
 .header {
-    border-bottom: 1px solid #5c4615;
+    border-bottom: 3px solid #d4a94a;
+    padding-bottom: 12px;
+    margin-bottom: 20px;
 }
 
-/* Título con un brillo dorado suave */
+/* Título estilo etiqueta de vino */
 .header h1 {
-    color: #e8d09e;
-    text-shadow: 0 0 6px rgba(212, 169, 74, 0.25);
+    color: #f7e4b0;
+    text-shadow: 0 0 12px rgba(212, 169, 74, 0.7),
+                 0 0 4px rgba(212, 169, 74, 0.6);
+    font-weight: 700;
 }
 
-/* Hover dorado en inputs y selects */
+/* Línea dorada decorativa */
+.header::after {
+    content: "";
+    display: block;
+    width: 60px;
+    height: 3px;
+    background: #d4a94a;
+    margin-top: 10px;
+    border-radius: 2px;
+    opacity: 0.9;
+}
+
+/* Inputs con borde dorado al foco */
 .filters input:focus,
 .filters select:focus {
-    border-color: #d4a94a;
-    box-shadow: 0 0 6px rgba(212, 169, 74, 0.4);
+    border-color: #f1c75a;
+    box-shadow: 0 0 10px rgba(241, 199, 90, 0.8);
 }
 
-/* Encabezados de tabla con banda dorada mínima */
+/* Encabezado de tabla con dorado más visible */
 th {
-    background: linear-gradient(90deg, #2b2b2b, #282014);
-    border-bottom: 1px solid #6a531c;
+    background: linear-gradient(90deg, #4a3b1a, #2e2412);
+    border-bottom: 3px solid #d4a94a;
+    color: #f6eac2;
 }
 
-/* Hover dorado muy tenue en filas */
+/* Hover dorado fuerte */
 tbody tr:hover {
-    background: #2c2c22;
+    background: #3a301c;
+    box-shadow: inset 0 0 8px rgba(212, 169, 74, 0.4);
+}
+
+/* Precio destacado */
+td:last-child {
+    color: #f2d68a;
+    font-weight: 600;
 }
