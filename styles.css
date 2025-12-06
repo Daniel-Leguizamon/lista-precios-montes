@@ -41,6 +41,7 @@ body {
     padding: 24px 24px 28px;
     border-radius: 16px;
     border: 2px solid #d4a94a;
+    overflow-x: hidden; /* 👈 evita que la tabla rompa el borde */
 
     /* Glow dorado + animación respirando */
     box-shadow:
@@ -85,7 +86,6 @@ body {
 .logo {
     height: 54px;
     width: auto;
-    display: block;
     border-radius: 6px;
 }
 
@@ -93,7 +93,6 @@ body {
     margin: 0;
     font-size: 24px;
     font-weight: 700;
-    letter-spacing: 0.5px;
     color: #f7e4b0;
     text-shadow:
         0 0 12px rgba(212, 169, 74, 0.7),
@@ -120,12 +119,7 @@ body {
     border: 1px solid #3c3c3c;
     background: #121212;
     color: #f0f0f0;
-    box-shadow: 0 0 0 rgba(0,0,0,0);
-    transition:
-        border-color 0.2s ease,
-        box-shadow 0.2s ease,
-        background 0.2s ease,
-        transform 0.12s ease;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.12s ease;
 }
 
 .filters input::placeholder {
@@ -134,10 +128,8 @@ body {
 
 .filters input:focus,
 .filters select:focus {
-    outline: none;
     border-color: #f1c75a;
-    box-shadow: 0 0 10px rgba(241, 199, 90, 0.8);
-    background: #151515;
+    box-shadow: 0 0 10px rgba(241,199,90,0.8);
     transform: translateY(-1px);
 }
 
@@ -155,6 +147,7 @@ body {
 
 table {
     width: 100%;
+    table-layout: fixed; /* 👈 evita que se ensanche */
     border-collapse: collapse;
     margin-top: 6px;
     font-size: 14px;
@@ -164,48 +157,34 @@ th {
     background: linear-gradient(90deg, #4a3b1a, #2e2412);
     color: #f6eac2;
     padding: 10px;
-    text-align: left;
     border-bottom: 3px solid #d4a94a;
-    font-weight: 600;
 }
-
-.th-precio,
-.col-precio {
-    text-align: right;
-    white-space: nowrap;   /* 👈 todo en una sola línea */
-}
-
 
 td {
     padding: 8px 10px;
     border-bottom: 1px solid #262626;
     color: #e0e0e0;
+    word-wrap: break-word;
+    overflow-wrap: break-word; /* 👈 texto larga ya no rompe nada */
 }
 
-tbody tr:nth-child(odd) {
-    background: #161616;
+.th-precio,
+.col-precio {
+    text-align: right;
+    white-space: nowrap;
 }
 
-tbody tr:nth-child(even) {
-    background: #1c1c1c;
-}
-
-/* Hover dorado + leve movimiento */
-tbody tr {
-    transition:
-        background 0.15s ease,
-        box-shadow 0.15s ease,
-        transform 0.12s ease;
-}
+tbody tr:nth-child(odd) { background: #161616; }
+tbody tr:nth-child(even) { background: #1c1c1c; }
 
 tbody tr:hover {
     background: #3a301c;
-    box-shadow: inset 0 0 8px rgba(212, 169, 74, 0.4);
+    box-shadow: inset 0 0 8px rgba(212,169,74,0.4);
     transform: translateY(-1px);
 }
 
 /* ---------------------- */
-/* CONTROL DE CANTIDAD + BOTÓN AGREGAR */
+/* CONTROL DE CANTIDAD */
 /* ---------------------- */
 
 .qty-wrapper {
@@ -213,13 +192,11 @@ tbody tr:hover {
     align-items: center;
     justify-content: flex-end;
     gap: 4px;
-    flex-wrap: nowrap;
 }
 
 .qty-label {
     font-size: 11px;
     color: #ccc;
-    margin-right: 2px;
 }
 
 .qty-btn {
@@ -230,33 +207,17 @@ tbody tr:hover {
     background: #252525;
     color: #eee;
     cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 0;
-    font-size: 13px;
-    transition:
-        background 0.15s ease,
-        transform 0.1s ease,
-        box-shadow 0.15s ease;
-}
-
-.qty-btn:hover {
-    background: #333;
-    box-shadow: 0 0 4px rgba(212,169,74,0.6);
-    transform: translateY(-1px);
 }
 
 .qty-input {
     width: 40px;
-    flex: 0 0 40px;
     padding: 2px 4px;
     border-radius: 4px;
     border: 1px solid #555;
     background: #111;
     color: #f0f0f0;
-    font-size: 12px;
     text-align: center;
+    font-size: 12px;
 }
 
 .btn-agregar {
@@ -266,33 +227,21 @@ tbody tr:hover {
     border: 1px solid #d4a94a;
     background: #1c1c1c;
     color: #f7e4b0;
-    cursor: pointer;
-    transition:
-        background 0.15s ease,
-        transform 0.1s ease,
-        box-shadow 0.15s ease;
 }
 
-.btn-agregar:hover {
-    background: #3a301c;
-    box-shadow: 0 0 6px rgba(212,169,74,0.7);
-    transform: translateY(-1px);
-}
-
-/* efecto “ok” al hacer click en agregar */
 .btn-agregar-ok {
     background: #d4a94a !important;
     color: #181818 !important;
 }
 
 /* ---------------------- */
-/* PRESUPUESTO (CARRITO) */
+/* PRESUPUESTO */
 /* ---------------------- */
 
 .presupuesto {
     margin-top: 24px;
     padding-top: 14px;
-    border-top: 1px solid rgba(212, 169, 74, 0.4);
+    border-top: 1px solid rgba(212,169,74,0.4);
 }
 
 .presupuesto h2 {
@@ -307,114 +256,26 @@ tbody tr:hover {
     color: #d0c089;
 }
 
-/* flash cuando se actualiza el carrito */
-.presupuesto-flash {
-    animation: presFlash 0.5s ease-out;
-}
-
-@keyframes presFlash {
-    0% { box-shadow: 0 0 0 rgba(212,169,74,0); }
-    50% { box-shadow: 0 0 16px rgba(212,169,74,0.8); }
-    100% { box-shadow: 0 0 0 rgba(212,169,74,0); }
-}
-
 .presupuesto-lista ul {
     list-style: none;
     padding: 0;
     margin: 0 0 8px;
 }
 
-.presupuesto-vacio {
-    margin: 0 0 6px;
-    color: #ccc;
-    font-size: 14px;
-}
-
-.presupuesto-lista li {
-    display: flex;
-    justify-content: space-between;
-    gap: 8px;
-    font-size: 14px;
-    padding: 4px 0;
-    border-bottom: 1px dashed #333;
-}
-
-.pres-desc {
-    flex: 1;
-}
-
-.pres-cant {
-    min-width: 60px;
-    text-align: center;
-}
+.pres-desc { flex: 1; }
 
 .input-cant {
     width: 60px;
     padding: 2px 4px;
-    font-size: 13px;
     border-radius: 4px;
     border: 1px solid #555;
     background: #111;
-    color: #f0f0f0;
+    color: #eee;
     text-align: center;
 }
 
-.pres-sub {
-    min-width: 90px;
-    text-align: right;
-    color: #f2d68a;
-}
-
-.presupuesto-footer {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    flex-wrap: wrap;
-    gap: 8px;
-    margin-top: 6px;
-}
-
-.presupuesto-total {
-    font-weight: 600;
-}
-
-.presupuesto-buttons {
-    display: flex;
-    gap: 8px;
-}
-
-/* Botones generales */
-.btn-principal,
-.btn-secundario {
-    cursor: pointer;
-    border-radius: 6px;
-    border: 1px solid transparent;
-    font-size: 13px;
-    padding: 6px 10px;
-}
-
-.btn-principal {
-    background: #d4a94a;
-    color: #181818;
-    font-weight: 600;
-}
-
-.btn-principal:hover {
-    background: #f1c75a;
-}
-
-.btn-secundario {
-    background: #252525;
-    color: #eee;
-    border-color: #555;
-}
-
-.btn-secundario:hover {
-    background: #333;
-}
-
 /* ---------------------- */
-/* BOTÓN FLOTANTE IR A PRESUPUESTO */
+/* BOTÓN FLOTANTE */
 /* ---------------------- */
 
 .btn-flotante {
@@ -432,143 +293,56 @@ tbody tr:hover {
     align-items: center;
     justify-content: center;
     font-size: 22px;
-    box-shadow: 0 0 10px rgba(0,0,0,0.8);
-    z-index: 999;
-    transition:
-        background 0.15s ease,
-        color 0.15s ease,
-        transform 0.12s ease,
-        box-shadow 0.15s ease;
 }
 
-.btn-flotante.visible {
-    display: flex;
-}
-
-.btn-flotante:hover {
-    background: #d4a94a;
-    color: #181818;
-    transform: translateY(-2px);
-    box-shadow: 0 0 18px rgba(212,169,74,0.8);
-}
+.btn-flotante.visible { display: flex; }
 
 /* ---------------------- */
-/* RESPONSIVE (CELULAR)   */
+/* RESPONSIVE CELULAR */
 /* ---------------------- */
+
 @media (max-width: 700px) {
-    /* menos margen alrededor */
-    body {
-        padding: 10px;
-    }
 
-    /* la caja ocupa casi toda la pantalla pero sin pegarse a los bordes */
+    body { padding: 10px; }
+
     .container {
         padding: 16px 12px 20px;
         border-radius: 14px;
-        margin: 0 auto;
     }
 
-    /* header centrado y más compacto */
-    .header {
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        gap: 6px;
-        padding-bottom: 10px;
-        margin-bottom: 14px;
-        text-align: center;
+    /* TABLA MÁS PEQUEÑA */
+    table { font-size: 12px; }
+
+    td, th {
+        padding: 7px 5px;
     }
 
-    .logo {
-        height: 42px;
+    /* Reduzco la columna Agregar */
+    td:last-child {
+        width: 90px; /* 👈 clave */
     }
 
-    .header h1 {
-        font-size: 20px;
-    }
+    /* Ocultamos 'Cant.' */
+    .qty-label { display: none; }
 
-    /* filtros uno abajo del otro */
-    .filters {
-        flex-direction: column;
-        gap: 8px;
-    }
-
-    .filters input,
-    .filters select {
-        width: 100%;
-        font-size: 14px;
-        padding: 9px 10px;
-    }
-
-    /* tabla más compacta para que entre todo mejor */
-    table {
-        font-size: 12px;
-    }
-
-    th,
-    td {
-        padding: 7px 6px;
-    }
-
-    /* control de cantidad más prolijo en celu */
-    .qty-wrapper {
-        justify-content: flex-start;
-        flex-wrap: wrap;
-        gap: 4px;
-    }
-
-    .qty-label {
-        font-size: 10px;
+    /* Botones más chicos */
+    .qty-btn {
+        width: 20px;
+        height: 20px;
+        font-size: 11px;
     }
 
     .qty-input {
-        width: 36px;
+        width: 32px;
         font-size: 11px;
-    }
-
-    .qty-btn {
-        width: 22px;
-        height: 22px;
-        font-size: 12px;
     }
 
     .btn-agregar {
-        margin-top: 2px;
-        padding: 3px 6px;
-        font-size: 11px;
+        padding: 3px 5px;
+        font-size: 10px;
     }
 
-    /* presupuesto: texto un poquito más chico */
-    .presupuesto-lista li {
-        font-size: 12px;
-    }
-
-    .pres-sub {
-        min-width: 80px;
-        font-size: 12px;
-    }
-
-    .presupuesto-footer {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 6px;
-    }
-
-    .presupuesto-buttons {
-        width: 100%;
-        flex-wrap: wrap;
-        justify-content: flex-start;
-        gap: 6px;
-    }
-
-    .btn-principal,
-    .btn-secundario {
-        width: auto;
-        padding: 6px 10px;
-        font-size: 12px;
-    }
-
-    /* botón flotante más grande en celular */
+    /* Botón flotante más grande */
     .btn-flotante {
         right: 16px;
         bottom: 16px;
