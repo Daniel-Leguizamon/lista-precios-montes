@@ -11,6 +11,24 @@ h1 {
     margin-bottom: 20px;
 }
 
+.header {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.logo {
+    height: 55px;
+    width: auto;
+}
+ 
+.header h1 {
+    margin: 0;
+    font-size: 28px;
+    font-weight: bold;
+}
+
 .container {
     max-width: 900px;
     margin: auto;
