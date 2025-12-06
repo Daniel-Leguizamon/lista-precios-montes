@@ -169,57 +169,60 @@
     // ---------------------------
     // CLICK EN TABLA (CANTIDAD + AGREGAR)
     // ---------------------------
-    document.getElementById("tabla").addEventListener("click", function(e) {
-        const target = e.target;
+   document.getElementById("tabla").addEventListener("click", function(e) {
+    const target = e.target;
 
-        // Botones + y -
-        if (target.classList.contains("qty-btn")) {
-            const wrapper = target.closest(".qty-wrapper");
-            if (!wrapper) return;
-            const input = wrapper.querySelector(".qty-input");
-            if (!input) return;
+    // Botones + y -
+    if (target.classList.contains("qty-btn")) {
+        const wrapper = target.closest(".qty-wrapper");
+        if (!wrapper) return;
+        const input = wrapper.querySelector(".qty-input");
+        if (!input) return;
 
-            let valor = parseInt(input.value, 10) || 1;
+        let valor = parseInt(input.value, 10) || 1;
 
-            if (target.classList.contains("qty-plus")) {
-                valor++;
-            } else if (target.classList.contains("qty-minus")) {
-                valor = Math.max(1, valor - 1);
-            }
+        if (target.classList.contains("qty-plus")) {
+            valor++;
+        } else if (target.classList.contains("qty-minus")) {
+            valor = Math.max(1, valor - 1);
+        }
 
-            input.value = valor;
+        input.value = valor;
+        return;
+    }
+
+    // Botón Agregar
+    if (target.classList.contains("btn-agregar")) {
+        const wrapper = target.closest(".qty-wrapper");
+        if (!wrapper) return;
+
+        const input = wrapper.querySelector(".qty-input");
+        let cantidad = parseInt(input.value, 10) || 1;
+        const id = Number(wrapper.dataset.id);
+
+        // MODO CELU: primer toque solo abre los controles
+        if (window.innerWidth <= 700 && !wrapper.classList.contains("open")) {
+            wrapper.classList.add("open");
+            target.textContent = "OK";
             return;
         }
 
-        // Botón Agregar
-        if (target.classList.contains("btn-agregar")) {
-            const wrapper = target.closest(".qty-wrapper");
-            if (!wrapper) return;
+        agregarAlCarrito(id, cantidad);
 
-            const input = wrapper.querySelector(".qty-input");
-            let cantidad = parseInt(input.value, 10) || 1;
-            const id = Number(wrapper.dataset.id);
+        // 👉 acá actualizamos el carrito y aparece la flecha
+        mostrarCarrito();
 
-            // MODO CELU: primer toque solo abre los controles
-            if (window.innerWidth <= 700 && !wrapper.classList.contains("open")) {
-                wrapper.classList.add("open");
-                target.textContent = "OK";
-                return;
-            }
+        // feedback visual
+        target.classList.add("btn-agregar-ok");
+        setTimeout(() => target.classList.remove("btn-agregar-ok"), 200);
 
-            agregarAlCarrito(id, cantidad);
-
-            // feedback visual
-            target.classList.add("btn-agregar-ok");
-            setTimeout(() => target.classList.remove("btn-agregar-ok"), 200);
-
-            // en celu, cerramos panel y volvemos el texto
-            if (window.innerWidth <= 700) {
-                wrapper.classList.remove("open");
-                target.textContent = "Agregar";
-            }
+        // en celu, cerramos panel y volvemos el texto
+        if (window.innerWidth <= 700) {
+            wrapper.classList.remove("open");
+            target.textContent = "Agregar";
         }
-    });
+    }
+});
 
     // ---------------------------
     // CARRITO
@@ -386,6 +389,7 @@
 
 </body>
 </html>
+
 
 
 
