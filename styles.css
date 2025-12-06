@@ -223,6 +223,12 @@ tbody tr:hover {
     transform: translateY(-1px);
 }
 
+/* efecto “ok” al hacer click en agregar */
+.btn-agregar-ok {
+    background: #d4a94a !important;
+    color: #181818 !important;
+}
+
 /* ---------------------- */
 /* PRESUPUESTO (CARRITO) */
 /* ---------------------- */
@@ -237,6 +243,23 @@ tbody tr:hover {
     font-size: 18px;
     margin: 0 0 10px;
     color: #f7e4b0;
+}
+
+.presupuesto-resumen {
+    font-size: 13px;
+    margin-left: 6px;
+    color: #d0c089;
+}
+
+/* flash cuando se actualiza el carrito */
+.presupuesto-flash {
+    animation: presFlash 0.5s ease-out;
+}
+
+@keyframes presFlash {
+    0% { box-shadow: 0 0 0 rgba(212,169,74,0); }
+    50% { box-shadow: 0 0 16px rgba(212,169,74,0.8); }
+    100% { box-shadow: 0 0 0 rgba(212,169,74,0); }
 }
 
 .presupuesto-lista ul {
@@ -265,7 +288,18 @@ tbody tr:hover {
 }
 
 .pres-cant {
-    min-width: 40px;
+    min-width: 60px;
+    text-align: center;
+}
+
+.input-cant {
+    width: 60px;
+    padding: 2px 4px;
+    font-size: 13px;
+    border-radius: 4px;
+    border: 1px solid #555;
+    background: #111;
+    color: #f0f0f0;
     text-align: center;
 }
 
@@ -384,3 +418,4 @@ tbody tr:hover {
         flex-wrap: wrap;
     }
 }
+
