@@ -121,7 +121,6 @@ body {
     background: #121212;
     color: #f0f0f0;
     box-shadow: 0 0 0 rgba(0,0,0,0);
-    box-sizing: border-box; /* 👈 evita que se salga del marco en móvil */
     transition:
         border-color 0.2s ease,
         box-shadow 0.2s ease,
@@ -170,6 +169,11 @@ th {
     font-weight: 600;
 }
 
+.th-precio,
+.col-precio {
+    text-align: right;
+}
+
 td {
     padding: 8px 10px;
     border-bottom: 1px solid #262626;
@@ -198,15 +202,125 @@ tbody tr:hover {
     transform: translateY(-1px);
 }
 
-/* Precio alineado y destacado */
-td:last-child,
-th:last-child {
-    text-align: right;
+/* Botón agregar */
+.btn-agregar {
+    padding: 4px 8px;
+    font-size: 14px;
+    border-radius: 6px;
+    border: 1px solid #d4a94a;
+    background: #1c1c1c;
+    color: #f7e4b0;
+    cursor: pointer;
+    transition:
+        background 0.15s ease,
+        transform 0.1s ease,
+        box-shadow 0.15s ease;
 }
 
-td:last-child {
+.btn-agregar:hover {
+    background: #3a301c;
+    box-shadow: 0 0 6px rgba(212,169,74,0.7);
+    transform: translateY(-1px);
+}
+
+/* ---------------------- */
+/* PRESUPUESTO (CARRITO) */
+/* ---------------------- */
+
+.presupuesto {
+    margin-top: 24px;
+    padding-top: 14px;
+    border-top: 1px solid rgba(212, 169, 74, 0.4);
+}
+
+.presupuesto h2 {
+    font-size: 18px;
+    margin: 0 0 10px;
+    color: #f7e4b0;
+}
+
+.presupuesto-lista ul {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 8px;
+}
+
+.presupuesto-vacio {
+    margin: 0 0 6px;
+    color: #ccc;
+    font-size: 14px;
+}
+
+.presupuesto-lista li {
+    display: flex;
+    justify-content: space-between;
+    gap: 8px;
+    font-size: 14px;
+    padding: 4px 0;
+    border-bottom: 1px dashed #333;
+}
+
+.pres-desc {
+    flex: 1;
+}
+
+.pres-cant {
+    min-width: 40px;
+    text-align: center;
+}
+
+.pres-sub {
+    min-width: 90px;
+    text-align: right;
     color: #f2d68a;
+}
+
+.presupuesto-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 6px;
+}
+
+.presupuesto-total {
     font-weight: 600;
+}
+
+.presupuesto-buttons {
+    display: flex;
+    gap: 8px;
+}
+
+/* Botones generales */
+.btn-principal,
+.btn-secundario {
+    cursor: pointer;
+    border-radius: 6px;
+    border: 1px solid transparent;
+    font-size: 13px;
+    padding: 6px 10px;
+}
+
+.btn-principal {
+    background: #d4a94a;
+    color: #181818;
+    font-weight: 600;
+}
+
+.btn-principal:hover {
+    background: #f1c75a;
+}
+
+.btn-secundario {
+    background: #252525;
+    color: #eee;
+    border-color: #555;
+}
+
+.btn-secundario:hover {
+    background: #333;
 }
 
 /* ---------------------- */
@@ -259,5 +373,14 @@ td:last-child {
     td {
         padding: 7px 6px;
     }
-}
 
+    .presupuesto-footer {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .presupuesto-buttons {
+        width: 100%;
+        flex-wrap: wrap;
+    }
+}
