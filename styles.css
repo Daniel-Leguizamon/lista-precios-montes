@@ -31,11 +31,15 @@ body {
 .header {
     display: flex;
     align-items: center;
+    justify-content: center;   /* 👈 NUEVO */
     gap: 14px;
     margin-bottom: 18px;
-    border-bottom: 1px solid #2e2e2e;
-    padding-bottom: 10px;
+    border-bottom: 3px solid #d4a94a;
+    padding-bottom: 12px;
+    margin-bottom: 20px;
+    text-align: center;        /* 👈 NUEVO (para el h1) */
 }
+
 
 .logo {
     height: 54px;        /* si la querés más chica, bajá a 46 o 40 */
@@ -207,17 +211,7 @@ th:last-child {
     font-weight: 700;
 }
 
-/* Línea dorada decorativa */
-.header::after {
-    content: "";
-    display: block;
-    width: 60px;
-    height: 3px;
-    background: #d4a94a;
-    margin-top: 10px;
-    border-radius: 2px;
-    opacity: 0.9;
-}
+
 
 /* Inputs con borde dorado al foco */
 .filters input:focus,
