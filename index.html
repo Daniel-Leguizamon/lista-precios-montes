@@ -39,7 +39,8 @@
 
     async function cargarCSV() {
         const response = await fetch("./lista_precios.csv");
-        const texto = await response.text();
+        const buffer = await response.arrayBuffer();
+        const texto = new TextDecoder("utf-8").decode(buffer);
 
         let lineas = texto.split("\n").map(l => l.trim());
 
@@ -116,4 +117,5 @@
 
 </body>
 </html>
+
 
