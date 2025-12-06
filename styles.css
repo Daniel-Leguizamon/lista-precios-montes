@@ -455,18 +455,20 @@ tbody tr:hover {
 /* ---------------------- */
 /* RESPONSIVE (CELULAR)   */
 /* ---------------------- */
-
 @media (max-width: 700px) {
+    /* menos margen alrededor */
     body {
         padding: 10px;
     }
 
+    /* la caja ocupa casi toda la pantalla pero sin pegarse a los bordes */
     .container {
         padding: 16px 12px 20px;
         border-radius: 14px;
         margin: 0 auto;
     }
 
+    /* header centrado y más compacto */
     .header {
         flex-direction: column;
         align-items: center;
@@ -474,6 +476,7 @@ tbody tr:hover {
         gap: 6px;
         padding-bottom: 10px;
         margin-bottom: 14px;
+        text-align: center;
     }
 
     .logo {
@@ -483,15 +486,8 @@ tbody tr:hover {
     .header h1 {
         font-size: 20px;
     }
-    
-    .btn-flotante {
-        right: 16px;
-        bottom: 16px;
-        width: 52px;
-        height: 52px;
-        font-size: 26px;
-    }
 
+    /* filtros uno abajo del otro */
     .filters {
         flex-direction: column;
         gap: 8px;
@@ -500,8 +496,11 @@ tbody tr:hover {
     .filters input,
     .filters select {
         width: 100%;
+        font-size: 14px;
+        padding: 9px 10px;
     }
 
+    /* tabla más compacta para que entre todo mejor */
     table {
         font-size: 12px;
     }
@@ -511,22 +510,72 @@ tbody tr:hover {
         padding: 7px 6px;
     }
 
+    /* control de cantidad más prolijo en celu */
     .qty-wrapper {
         justify-content: flex-start;
+        flex-wrap: wrap;
+        gap: 4px;
+    }
+
+    .qty-label {
+        font-size: 10px;
+    }
+
+    .qty-input {
+        width: 36px;
+        font-size: 11px;
+    }
+
+    .qty-btn {
+        width: 22px;
+        height: 22px;
+        font-size: 12px;
     }
 
     .btn-agregar {
-        margin-left: 2px;
         margin-top: 2px;
+        padding: 3px 6px;
+        font-size: 11px;
+    }
+
+    /* presupuesto: texto un poquito más chico */
+    .presupuesto-lista li {
+        font-size: 12px;
+    }
+
+    .pres-sub {
+        min-width: 80px;
+        font-size: 12px;
     }
 
     .presupuesto-footer {
         flex-direction: column;
         align-items: flex-start;
+        gap: 6px;
     }
 
     .presupuesto-buttons {
         width: 100%;
         flex-wrap: wrap;
+        justify-content: flex-start;
+        gap: 6px;
+    }
+
+    .btn-principal,
+    .btn-secundario {
+        width: auto;
+        padding: 6px 10px;
+        font-size: 12px;
+    }
+
+    /* botón flotante más grande en celular */
+    .btn-flotante {
+        right: 16px;
+        bottom: 16px;
+        width: 52px;
+        height: 52px;
+        font-size: 26px;
     }
 }
+
+
