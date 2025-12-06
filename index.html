@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <title>Lista de Precios - Montes</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<link rel="stylesheet" href="styles.css?v=4">
+<link rel="stylesheet" href="styles.css?v=5">
 <link rel="icon" type="image/png" href="favicon.png?v=1">
 </head>
 
@@ -57,9 +57,13 @@
 
 </div>
 
+<!-- Botón flotante para ir al presupuesto -->
+<button id="btn-ir-presupuesto" class="btn-flotante" type="button" title="Ir al presupuesto">↓</button>
+
 <script>
     let datos = [];
     let carrito = [];
+    const btnIrPresupuesto = document.getElementById("btn-ir-presupuesto");
 
     async function cargarCSV() {
         const response = await fetch("./lista_precios.csv");
@@ -242,6 +246,7 @@
             cont.innerHTML = `<p class="presupuesto-vacio">No hay productos en el presupuesto.</p>`;
             totalSpan.textContent = "Total: $ 0";
             if (resumenSpan) resumenSpan.textContent = "";
+            if (btnIrPresupuesto) btnIrPresupuesto.classList.remove("visible");
             return;
         }
 
@@ -277,6 +282,11 @@
         // flash dorado en el bloque de presupuesto
         presupuestoDiv.classList.add("presupuesto-flash");
         setTimeout(() => presupuestoDiv.classList.remove("presupuesto-flash"), 500);
+
+        // mostrar botón flotante cuando hay items
+        if (btnIrPresupuesto) {
+            btnIrPresupuesto.classList.add("visible");
+        }
     }
 
     // Cambiar cantidades desde el presupuesto
@@ -316,7 +326,7 @@
         lineas.push("");
         lineas.push("Total: $ " + total.toLocaleString("es-AR"));
         lineas.push("");
-        lineas.push("Montes • Almacén de Bebidas");
+        lineas.push("Montes • Almacén de Bebidas";
 
         return lineas.join("\n");
     }
@@ -340,12 +350,21 @@
         window.open(url, "_blank");
     });
 
+    // Botón flotante: ir al presupuesto
+    if (btnIrPresupuesto) {
+        btnIrPresupuesto.addEventListener("click", () => {
+            const presupuestoDiv = document.getElementById("presupuesto");
+            if (presupuestoDiv) {
+                presupuestoDiv.scrollIntoView({ behavior: "smooth" });
+            }
+        });
+    }
+
     cargarCSV();
 </script>
 
 </body>
 </html>
-
 
 
 
