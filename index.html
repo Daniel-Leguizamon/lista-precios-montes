@@ -65,6 +65,9 @@
     let carrito = [];
     const btnIrPresupuesto = document.getElementById("btn-ir-presupuesto");
 
+    // -------------------------
+    // CARGAR CSV
+    // -------------------------
     async function cargarCSV() {
         const response = await fetch("./lista_precios.csv");
         const buffer = await response.arrayBuffer();
@@ -72,7 +75,7 @@
 
         let lineas = texto.split("\n").map(l => l.trim());
 
-        // Ignoramos encabezado
+        // Ignoramos encabezado (fila 0)
         for (let i = 1; i < lineas.length; i++) {
             if (!lineas[i]) continue;
             let cols = lineas[i].split(";");
@@ -106,6 +109,9 @@
         mostrarTabla(datos);
     }
 
+    // -------------------------
+    // RUBROS EN EL SELECT
+    // -------------------------
     function cargarRubros() {
         let select = document.getElementById("filtroRubro");
 
@@ -119,6 +125,9 @@
         });
     }
 
+    // -------------------------
+    // ARMAR TABLA
+    // -------------------------
     function mostrarTabla(lista) {
         let tabla = document.getElementById("tabla");
         tabla.innerHTML = "";
@@ -134,20 +143,17 @@
                 <td class="col-precio">${precioFormateado}</td>
                 <td>
                     <div class="qty-wrapper" data-id="${item.id}">
-    
-    <!-- Botón principal (único visible en móvil) -->
-    <button type="button" class="btn-agregar" data-id="${item.id}">Agregar</button>
+                        <!-- Botón principal (visible siempre) -->
+                        <button type="button" class="btn-agregar" data-id="${item.id}">Agregar</button>
 
-    <!-- Controles que se despliegan en celular -->
-    <div class="qty-controls">
-        <button type="button" class="qty-btn qty-minus" data-id="${item.id}">-</button>
-        <input type="number" min="1" value="1" class="qty-input" data-id="${item.id}">
-        <button type="button" class="qty-btn qty-plus" data-id="${item.id}">+</button>
-        <button type="button" class="btn-confirm" data-id="${item.id}">✔️</button>
-    </div>
-
-</div>
-
+                        <!-- Controles que se despliegan en celular -->
+                        <div class="qty-controls">
+                            <button type="button" class="qty-btn qty-minus" data-id="${item.id}">-</button>
+                            <input type="number" min="1" value="1" class="qty-input" data-id="${item.id}">
+                            <button type="button" class="qty-btn qty-plus" data-id="${item.id}">+</button>
+                            <button type="button" class="btn-confirm" data-id="${item.id}">✔️</button>
+                        </div>
+                    </div>
                 </td>
             `;
 
@@ -155,6 +161,9 @@
         });
     }
 
+    // -------------------------
+    // BUSCADOR Y FILTRO POR RUBRO
+    // -------------------------
     document.getElementById("buscar").addEventListener("input", filtrar);
     document.getElementById("filtroRubro").addEventListener("change", filtrar);
 
@@ -170,68 +179,86 @@
         mostrarTabla(filtrados);
     }
 
-    // Clicks en la tabla: cantidad (+/-) y Agregar
+    // -------------------------
+    // CLICK EN LA TABLA (CANTIDAD / AGREGAR / CONFIRMAR)
+    // -------------------------
     document.getElementById("tabla").addEventListener("click", function(e) {
-    const target = e.target;
+        const target = e.target;
 
-    /* ------------------------- */
-    /*  A) ABRIR/CERRAR PANEL EN CELULAR */
-    /* ------------------------- */
-    if (target.classList.contains("btn-agregar")) {
-        const wrapper = target.closest(".qty-wrapper");
-        if (!wrapper) return;
+        // A) ABRIR/CERRAR PANEL EN CELULAR (botón Agregar)
+        if (target.classList.contains("btn-agregar")) {
+            const wrapper = target.closest(".qty-wrapper");
+            if (!wrapper) return;
 
-        // mostrar/ocultar panel en móvil
-        wrapper.classList.toggle("open");
+            // En mobile: abre/cierra el panel
+            wrapper.classList.toggle("open");
 
-        // no agregar todavía
-        return;
-    }
-
-    /* ------------------------- */
-    /*  B) CONFIRMAR ✔️ EN CELULAR */
-    /* ------------------------- */
-    if (target.classList.contains("btn-confirm")) {
-        const wrapper = target.closest(".qty-wrapper");
-        if (!wrapper) return;
-
-        const input = wrapper.querySelector(".qty-input");
-        const id = Number(target.dataset.id);
-        let cantidad = parseInt(input.value, 10) || 1;
-
-        agregarAlCarrito(id, cantidad);
-
-        // cerrar panel
-        wrapper.classList.remove("open");
-
-        return;
-    }
-
-    /* ------------------------- */
-    /*  C) BOTONES + Y -  (escritorio + celular) */
-    /* ------------------------- */
-    if (target.classList.contains("qty-btn")) {
-        const wrapper = target.closest(".qty-wrapper");
-        if (!wrapper) return;
-        const input = wrapper.querySelector(".qty-input");
-        if (!input) return;
-
-        let valor = parseInt(input.value, 10) || 1;
-
-        if (target.classList.contains("qty-plus")) {
-            valor++;
-        } else if (target.classList.contains("qty-minus")) {
-            valor = Math.max(1, valor - 1);
+            // En escritorio: si quisieras que agregue directo,
+            // se puede hacer acá, pero por ahora lo usamos igual que en mobile.
+            return;
         }
 
-        input.value = valor;
-        return;
+        // B) CONFIRMAR ✔️ (celular)
+        if (target.classList.contains("btn-confirm")) {
+            const wrapper = target.closest(".qty-wrapper");
+            if (!wrapper) return;
+
+            const input = wrapper.querySelector(".qty-input");
+            const id = Number(target.dataset.id);
+            let cantidad = parseInt(input.value, 10) || 1;
+
+            agregarAlCarrito(id, cantidad);
+
+            // cerrar panel
+            wrapper.classList.remove("open");
+            return;
+        }
+
+        // C) BOTONES + Y - (escritorio + celular)
+        if (target.classList.contains("qty-btn")) {
+            const wrapper = target.closest(".qty-wrapper");
+            if (!wrapper) return;
+            const input = wrapper.querySelector(".qty-input");
+            if (!input) return;
+
+            let valor = parseInt(input.value, 10) || 1;
+
+            if (target.classList.contains("qty-plus")) {
+                valor++;
+            } else if (target.classList.contains("qty-minus")) {
+                valor = Math.max(1, valor - 1);
+            }
+
+            input.value = valor;
+            return;
+        }
+    });
+
+    // -------------------------
+    // AGREGAR AL CARRITO
+    // -------------------------
+    function agregarAlCarrito(idProducto, cantidad) {
+        const producto = datos.find(d => d.id === idProducto);
+        if (!producto) return;
+
+        let item = carrito.find(p => p.id === idProducto);
+        if (item) {
+            item.cantidad += cantidad;
+        } else {
+            carrito.push({
+                id: producto.id,
+                descripcion: producto.descripcion,
+                precio: producto.precio,
+                cantidad: cantidad
+            });
+        }
+
+        mostrarCarrito();
     }
 
-});
-
-    }
-
+    // -------------------------
+    // MOSTRAR CARRITO / PRESUPUESTO
+    // -------------------------
     function mostrarCarrito() {
         const cont = document.getElementById("presupuesto-lista");
         const totalSpan = document.getElementById("presupuesto-total");
@@ -275,17 +302,19 @@
             resumenSpan.textContent = `(${txt})`;
         }
 
-        // flash dorado en el bloque de presupuesto
+        // flash dorado
         presupuestoDiv.classList.add("presupuesto-flash");
         setTimeout(() => presupuestoDiv.classList.remove("presupuesto-flash"), 500);
 
-        // mostrar botón flotante cuando hay items
+        // mostrar botón flotante
         if (btnIrPresupuesto) {
             btnIrPresupuesto.classList.add("visible");
         }
     }
 
-    // Cambiar cantidades desde el presupuesto
+    // -------------------------
+    // CAMBIAR CANTIDAD DESDE EL PRESUPUESTO
+    // -------------------------
     document.getElementById("presupuesto-lista").addEventListener("change", function(e) {
         if (e.target.classList.contains("input-cant")) {
             const id = Number(e.target.dataset.id);
@@ -303,6 +332,9 @@
         }
     });
 
+    // -------------------------
+    // TEXTO PARA WHATSAPP
+    // -------------------------
     function generarTextoPresupuesto() {
         if (carrito.length === 0) {
             return "Hola! Quisiera consultar la disponibilidad de los siguientes productos para realizar una compra.\n\n(Sin productos seleccionados)";
@@ -328,11 +360,17 @@
         return lineas.join("\n");
     }
 
+    // -------------------------
+    // BOTÓN VACIAR
+    // -------------------------
     document.getElementById("btn-vaciar").addEventListener("click", function() {
         carrito = [];
         mostrarCarrito();
     });
 
+    // -------------------------
+    // BOTÓN WHATSAPP
+    // -------------------------
     document.getElementById("btn-whatsapp").addEventListener("click", function() {
         if (carrito.length === 0) {
             alert("No hay productos en el presupuesto.");
@@ -340,58 +378,56 @@
         }
 
         const texto = generarTextoPresupuesto();
-
-        // 👉 Tu WhatsApp laboral
         const url = "https://wa.me/5492212244033?text=" + encodeURIComponent(texto);
-
         window.open(url, "_blank");
     });
-// ---------------------------
-// BOTÓN FLOTANTE: SUBIR / BAJAR
-// ---------------------------
-let modoIrArriba = false; // false = bajar al presupuesto, true = subir al buscador
 
-if (btnIrPresupuesto) {
-    // Click en el botón
-    btnIrPresupuesto.addEventListener("click", () => {
-        if (modoIrArriba) {
-            // Subir al principio (buscador)
-            window.scrollTo({
-                top: 0,
-                behavior: "smooth"
-            });
-        } else {
-            // Bajar al presupuesto
-            const presupuestoDiv = document.getElementById("presupuesto");
-            if (presupuestoDiv) {
-                presupuestoDiv.scrollIntoView({ behavior: "smooth" });
+    // ---------------------------
+    // BOTÓN FLOTANTE: SUBIR / BAJAR
+    // ---------------------------
+    let modoIrArriba = false; // false = bajar al presupuesto, true = subir al buscador
+
+    if (btnIrPresupuesto) {
+        // Click en el botón
+        btnIrPresupuesto.addEventListener("click", () => {
+            if (modoIrArriba) {
+                // Subir al principio (buscador)
+                window.scrollTo({
+                    top: 0,
+                    behavior: "smooth"
+                });
+            } else {
+                // Bajar al presupuesto
+                const presupuestoDiv = document.getElementById("presupuesto");
+                if (presupuestoDiv) {
+                    presupuestoDiv.scrollIntoView({ behavior: "smooth" });
+                }
             }
-        }
-    });
+        });
 
-    // Cambiar la flecha según el scroll
-    window.addEventListener("scroll", () => {
-        // si no hay carrito visible, no hacemos nada
-        if (!btnIrPresupuesto.classList.contains("visible")) return;
+        // Cambiar la flecha según el scroll
+        window.addEventListener("scroll", () => {
+            // si no hay carrito visible, no hacemos nada
+            if (!btnIrPresupuesto.classList.contains("visible")) return;
 
-        // cerca del top -> flecha hacia abajo
-        if (window.scrollY < 150) {
-            modoIrArriba = false;
-            btnIrPresupuesto.textContent = "↓";
-        } else {
-            // scrolleado -> flecha hacia arriba
-            modoIrArriba = true;
-            btnIrPresupuesto.textContent = "↑";
-        }
-    });
-}
+            if (window.scrollY < 150) {
+                modoIrArriba = false;
+                btnIrPresupuesto.textContent = "↓";
+            } else {
+                modoIrArriba = true;
+                btnIrPresupuesto.textContent = "↑";
+            }
+        });
+    }
 
-
+    // -------------------------
+    // INICIO
+    // -------------------------
     cargarCSV();
 </script>
-
 </body>
 </html>
+
 
 
 
