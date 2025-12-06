@@ -340,21 +340,52 @@
 
         window.open(url, "_blank");
     });
+// ---------------------------
+// BOTÓN FLOTANTE: SUBIR / BAJAR
+// ---------------------------
+let modoIrArriba = false; // false = bajar al presupuesto, true = subir al buscador
 
-    // Botón flotante: ir al presupuesto
-    if (btnIrPresupuesto) {
-        btnIrPresupuesto.addEventListener("click", () => {
+if (btnIrPresupuesto) {
+    // Click en el botón
+    btnIrPresupuesto.addEventListener("click", () => {
+        if (modoIrArriba) {
+            // Subir al principio (buscador)
+            window.scrollTo({
+                top: 0,
+                behavior: "smooth"
+            });
+        } else {
+            // Bajar al presupuesto
             const presupuestoDiv = document.getElementById("presupuesto");
             if (presupuestoDiv) {
                 presupuestoDiv.scrollIntoView({ behavior: "smooth" });
             }
-        });
-    }
+        }
+    });
+
+    // Cambiar la flecha según el scroll
+    window.addEventListener("scroll", () => {
+        // si no hay carrito visible, no hacemos nada
+        if (!btnIrPresupuesto.classList.contains("visible")) return;
+
+        // cerca del top -> flecha hacia abajo
+        if (window.scrollY < 150) {
+            modoIrArriba = false;
+            btnIrPresupuesto.textContent = "↓";
+        } else {
+            // scrolleado -> flecha hacia arriba
+            modoIrArriba = true;
+            btnIrPresupuesto.textContent = "↑";
+        }
+    });
+}
+
 
     cargarCSV();
 </script>
 
 </body>
 </html>
+
 
 
