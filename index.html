@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <title>Lista de Precios - Montes</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<link rel="stylesheet" href="styles.css?v=2">
+<link rel="stylesheet" href="styles.css?v=3">
 <link rel="icon" type="image/png" href="favicon.png?v=1">
 </head>
 
@@ -39,7 +39,10 @@
 
     <!-- Sección de presupuesto / carrito -->
     <div id="presupuesto" class="presupuesto">
-        <h2>Presupuesto</h2>
+        <h2>
+            Presupuesto
+            <span id="presupuesto-resumen" class="presupuesto-resumen"></span>
+        </h2>
         <div id="presupuesto-lista" class="presupuesto-lista">
             <p class="presupuesto-vacio">No hay productos en el presupuesto.</p>
         </div>
@@ -82,9 +85,9 @@
             // Convertimos precio a número
             let precioNumero = Number(
                 precioTexto
-                    .replace(/\./g, "")    // sacamos separador de miles si lo hubiera
-                    .replace(",", ".")     // cambiamos coma por punto
-                    .replace(/[^0-9.]/g, "") // sacamos cualquier cosa rara
+                    .replace(/\./g, "")        // separador miles
+                    .replace(",", ".")         // coma -> punto
+                    .replace(/[^0-9.]/g, "")   // basura
             ) || 0;
 
             datos.push({
@@ -149,17 +152,23 @@
         mostrarTabla(filtrados);
     }
 
-    // Delegación de eventos para botones "Agregar"
+    // Click en botón "Agregar" (sensación + carrito)
     document.getElementById("tabla").addEventListener("click", function(e) {
         if (e.target.classList.contains("btn-agregar")) {
             const id = Number(e.target.dataset.id);
             agregarAlCarrito(id);
+
+            // feedback visual en el botón
+            e.target.classList.add("btn-agregar-ok");
+            setTimeout(() => e.target.classList.remove("btn-agregar-ok"), 200);
         }
     });
 
     function agregarAlCarrito(idProducto) {
         const producto = datos.find(d => d.id === idProducto);
         if (!producto) return;
+
+        const estabaVacio = (carrito.length === 0);
 
         let item = carrito.find(p => p.id === idProducto);
         if (item) {
@@ -174,29 +183,44 @@
         }
 
         mostrarCarrito();
+
+        // primera vez que agregás algo, en celu te lleva al presupuesto
+        if (estabaVacio && window.innerWidth <= 700) {
+            const presupuestoDiv = document.getElementById("presupuesto");
+            if (presupuestoDiv) {
+                presupuestoDiv.scrollIntoView({ behavior: "smooth" });
+            }
+        }
     }
 
     function mostrarCarrito() {
         const cont = document.getElementById("presupuesto-lista");
         const totalSpan = document.getElementById("presupuesto-total");
+        const resumenSpan = document.getElementById("presupuesto-resumen");
+        const presupuestoDiv = document.getElementById("presupuesto");
 
         if (carrito.length === 0) {
             cont.innerHTML = `<p class="presupuesto-vacio">No hay productos en el presupuesto.</p>`;
             totalSpan.textContent = "Total: $ 0";
+            if (resumenSpan) resumenSpan.textContent = "";
             return;
         }
 
         let total = 0;
+        let totalCantidad = 0;
         let html = "<ul>";
 
         carrito.forEach(item => {
             const subtotal = item.precio * item.cantidad;
             total += subtotal;
+            totalCantidad += item.cantidad;
 
             html += `
                 <li>
                     <span class="pres-desc">${item.descripcion}</span>
-                    <span class="pres-cant">x${item.cantidad}</span>
+                    <span class="pres-cant">
+                        <input type="number" min="1" value="${item.cantidad}" class="input-cant" data-id="${item.id}">
+                    </span>
                     <span class="pres-sub">$ ${subtotal.toLocaleString("es-AR")}</span>
                 </li>
             `;
@@ -205,7 +229,34 @@
         html += "</ul>";
         cont.innerHTML = html;
         totalSpan.textContent = "Total: $ " + total.toLocaleString("es-AR");
+
+        if (resumenSpan) {
+            const txt = totalCantidad === 1 ? "1 ítem" : totalCantidad + " ítems";
+            resumenSpan.textContent = `(${txt})`;
+        }
+
+        // flash dorado en el bloque de presupuesto
+        presupuestoDiv.classList.add("presupuesto-flash");
+        setTimeout(() => presupuestoDiv.classList.remove("presupuesto-flash"), 500);
     }
+
+    // Cambiar cantidades desde el presupuesto
+    document.getElementById("presupuesto-lista").addEventListener("change", function(e) {
+        if (e.target.classList.contains("input-cant")) {
+            const id = Number(e.target.dataset.id);
+            let nueva = Number(e.target.value);
+            if (isNaN(nueva) || nueva < 1) {
+                nueva = 1;
+                e.target.value = 1;
+            }
+
+            let item = carrito.find(p => p.id === id);
+            if (item) {
+                item.cantidad = nueva;
+                mostrarCarrito();
+            }
+        }
+    });
 
     function generarTextoPresupuesto() {
         if (carrito.length === 0) {
@@ -243,7 +294,12 @@
         }
 
         const texto = generarTextoPresupuesto();
-        const url = "https://wa.me/?text=" + encodeURIComponent(texto);
+
+        // 👉 acá va TU número de WhatsApp (Argentina):
+        // 54 = código país, 9 opcional si es celular, 221 = área
+        // si necesitás ajustarlo, cambiá este número:
+        const url = "https://wa.me/5492212244033?text=" + encodeURIComponent(texto);
+
         window.open(url, "_blank");
     });
 
@@ -253,7 +309,6 @@
 </body>
 </html>
 
-</html>
 
 
 
