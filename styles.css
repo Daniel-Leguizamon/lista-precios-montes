@@ -172,7 +172,9 @@ th {
 .th-precio,
 .col-precio {
     text-align: right;
+    white-space: nowrap;   /* 👈 todo en una sola línea */
 }
+
 
 td {
     padding: 8px 10px;
@@ -480,6 +482,14 @@ tbody tr:hover {
 
     .header h1 {
         font-size: 20px;
+    }
+    
+    .btn-flotante {
+        right: 16px;
+        bottom: 16px;
+        width: 52px;
+        height: 52px;
+        font-size: 26px;
     }
 
     .filters {
