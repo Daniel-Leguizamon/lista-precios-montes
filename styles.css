@@ -1,4 +1,14 @@
 /* ---------------------- */
+/* RESET SUAVE / BASE */
+/* ---------------------- */
+
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
+/* ---------------------- */
 /* ESTILOS GENERALES */
 /* ---------------------- */
 
@@ -30,30 +40,29 @@ body {
     background: #181818;
     padding: 24px 24px 28px;
     border-radius: 16px;
-    box-shadow: 0 18px 45px rgba(0,0,0,0.8);
     border: 2px solid #d4a94a;
 
     /* Glow dorado + animación respirando */
     box-shadow:
-        0 0 30px rgba(212, 169, 74, 0.35),
+        0 0 30px rgba(212, 169, 74, 0.45),
         0 0 14px rgba(0, 0, 0, 0.9);
-    animation: goldPulse 8s infinite ease-in-out;
+    animation: goldPulse 6s infinite ease-in-out;
 }
 
 @keyframes goldPulse {
     0% {
         box-shadow:
-            0 0 26px rgba(212, 169, 74, 0.32),
+            0 0 26px rgba(212, 169, 74, 0.4),
             0 0 14px rgba(0, 0, 0, 0.9);
     }
     50% {
         box-shadow:
-            0 0 40px rgba(212, 169, 74, 0.55),
-            0 0 18px rgba(0, 0, 0, 1);
+            0 0 52px rgba(212, 169, 74, 0.8),
+            0 0 20px rgba(0, 0, 0, 1);
     }
     100% {
         box-shadow:
-            0 0 26px rgba(212, 169, 74, 0.32),
+            0 0 26px rgba(212, 169, 74, 0.4),
             0 0 14px rgba(0, 0, 0, 0.9);
     }
 }
@@ -112,6 +121,7 @@ body {
     background: #121212;
     color: #f0f0f0;
     box-shadow: 0 0 0 rgba(0,0,0,0);
+    box-sizing: border-box; /* 👈 evita que se salga del marco en móvil */
     transition:
         border-color 0.2s ease,
         box-shadow 0.2s ease,
@@ -174,7 +184,7 @@ tbody tr:nth-child(even) {
     background: #1c1c1c;
 }
 
-/* Hover dorado + leve movimiento (punto 7) */
+/* Hover dorado + leve movimiento */
 tbody tr {
     transition:
         background 0.15s ease,
@@ -204,19 +214,16 @@ td:last-child {
 /* ---------------------- */
 
 @media (max-width: 700px) {
-    /* menos margen alrededor */
     body {
         padding: 10px;
     }
 
-    /* la caja ocupa casi toda la pantalla pero sin pegarse a los bordes */
     .container {
         padding: 16px 12px 20px;
         border-radius: 14px;
         margin: 0 auto;
     }
 
-    /* header centrado y más compacto */
     .header {
         flex-direction: column;
         align-items: center;
@@ -234,7 +241,6 @@ td:last-child {
         font-size: 20px;
     }
 
-    /* filtros uno abajo del otro */
     .filters {
         flex-direction: column;
         gap: 8px;
@@ -245,7 +251,6 @@ td:last-child {
         width: 100%;
     }
 
-    /* tabla más compacta para que entre todo mejor */
     table {
         font-size: 12px;
     }
