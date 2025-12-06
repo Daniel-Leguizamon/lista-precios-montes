@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <title>Lista de Precios - Montes</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<link rel="stylesheet" href="styles.css?v=3">
+<link rel="stylesheet" href="styles.css?v=4">
 <link rel="icon" type="image/png" href="favicon.png?v=1">
 </head>
 
@@ -129,7 +129,13 @@
                 <td>${item.rubro}</td>
                 <td class="col-precio">${precioFormateado}</td>
                 <td>
-                    <button type="button" class="btn-agregar" data-id="${item.id}">+</button>
+                    <div class="qty-wrapper" data-id="${item.id}">
+                        <span class="qty-label">Cant.</span>
+                        <button type="button" class="qty-btn qty-minus" data-id="${item.id}">-</button>
+                        <input type="number" min="1" value="1" class="qty-input" data-id="${item.id}">
+                        <button type="button" class="qty-btn qty-plus" data-id="${item.id}">+</button>
+                        <button type="button" class="btn-agregar" data-id="${item.id}">Agregar</button>
+                    </div>
                 </td>
             `;
 
@@ -152,19 +158,52 @@
         mostrarTabla(filtrados);
     }
 
-    // Click en botón "Agregar" (sensación + carrito)
+    // Clicks en la tabla: cantidad (+/-) y Agregar
     document.getElementById("tabla").addEventListener("click", function(e) {
-        if (e.target.classList.contains("btn-agregar")) {
-            const id = Number(e.target.dataset.id);
-            agregarAlCarrito(id);
+        const target = e.target;
+
+        // Botones + y -
+        if (target.classList.contains("qty-btn")) {
+            const wrapper = target.closest(".qty-wrapper");
+            if (!wrapper) return;
+            const input = wrapper.querySelector(".qty-input");
+            if (!input) return;
+
+            let valor = parseInt(input.value, 10) || 1;
+
+            if (target.classList.contains("qty-plus")) {
+                valor++;
+            } else if (target.classList.contains("qty-minus")) {
+                valor = Math.max(1, valor - 1);
+            }
+
+            input.value = valor;
+            return;
+        }
+
+        // Botón "Agregar"
+        if (target.classList.contains("btn-agregar")) {
+            const wrapper = target.closest(".qty-wrapper");
+            if (!wrapper) return;
+
+            const id = Number(target.dataset.id);
+            const input = wrapper.querySelector(".qty-input");
+            let cantidad = parseInt(input.value, 10);
+
+            if (isNaN(cantidad) || cantidad < 1) {
+                cantidad = 1;
+                input.value = 1;
+            }
+
+            agregarAlCarrito(id, cantidad);
 
             // feedback visual en el botón
-            e.target.classList.add("btn-agregar-ok");
-            setTimeout(() => e.target.classList.remove("btn-agregar-ok"), 200);
+            target.classList.add("btn-agregar-ok");
+            setTimeout(() => target.classList.remove("btn-agregar-ok"), 200);
         }
     });
 
-    function agregarAlCarrito(idProducto) {
+    function agregarAlCarrito(idProducto, cantidad) {
         const producto = datos.find(d => d.id === idProducto);
         if (!producto) return;
 
@@ -172,13 +211,13 @@
 
         let item = carrito.find(p => p.id === idProducto);
         if (item) {
-            item.cantidad += 1;
+            item.cantidad += cantidad;
         } else {
             carrito.push({
                 id: producto.id,
                 descripcion: producto.descripcion,
                 precio: producto.precio,
-                cantidad: 1
+                cantidad: cantidad
             });
         }
 
@@ -295,9 +334,7 @@
 
         const texto = generarTextoPresupuesto();
 
-        // 👉 acá va TU número de WhatsApp (Argentina):
-        // 54 = código país, 9 opcional si es celular, 221 = área
-        // si necesitás ajustarlo, cambiá este número:
+        // 👉 Tu WhatsApp laboral
         const url = "https://wa.me/5492212244033?text=" + encodeURIComponent(texto);
 
         window.open(url, "_blank");
@@ -308,8 +345,6 @@
 
 </body>
 </html>
-
-
 
 
 
