@@ -207,11 +207,11 @@ tbody tr:hover {
 /* ---------------------- */
 
 .qty-wrapper {
-    display: flex;
+    display: inline-flex;
     align-items: center;
     justify-content: flex-end;
     gap: 4px;
-    flex-wrap: wrap;
+    flex-wrap: nowrap;
 }
 
 .qty-label {
@@ -221,8 +221,8 @@ tbody tr:hover {
 }
 
 .qty-btn {
-    width: 24px;
-    height: 24px;
+    width: 22px;
+    height: 22px;
     border-radius: 4px;
     border: 1px solid #555;
     background: #252525;
@@ -232,7 +232,7 @@ tbody tr:hover {
     align-items: center;
     justify-content: center;
     padding: 0;
-    font-size: 14px;
+    font-size: 13px;
     transition:
         background 0.15s ease,
         transform 0.1s ease,
@@ -246,19 +246,20 @@ tbody tr:hover {
 }
 
 .qty-input {
-    width: 48px;
+    width: 40px;
+    flex: 0 0 40px;
     padding: 2px 4px;
     border-radius: 4px;
     border: 1px solid #555;
     background: #111;
     color: #f0f0f0;
-    font-size: 13px;
+    font-size: 12px;
     text-align: center;
 }
 
 .btn-agregar {
-    padding: 4px 8px;
-    font-size: 13px;
+    padding: 3px 7px;
+    font-size: 12px;
     border-radius: 6px;
     border: 1px solid #d4a94a;
     background: #1c1c1c;
@@ -411,6 +412,45 @@ tbody tr:hover {
 }
 
 /* ---------------------- */
+/* BOTÓN FLOTANTE IR A PRESUPUESTO */
+/* ---------------------- */
+
+.btn-flotante {
+    position: fixed;
+    right: 24px;
+    bottom: 24px;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    border: 2px solid #d4a94a;
+    background: #181818;
+    color: #ffffff;
+    cursor: pointer;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.8);
+    z-index: 999;
+    transition:
+        background 0.15s ease,
+        color 0.15s ease,
+        transform 0.12s ease,
+        box-shadow 0.15s ease;
+}
+
+.btn-flotante.visible {
+    display: flex;
+}
+
+.btn-flotante:hover {
+    background: #d4a94a;
+    color: #181818;
+    transform: translateY(-2px);
+    box-shadow: 0 0 18px rgba(212,169,74,0.8);
+}
+
+/* ---------------------- */
 /* RESPONSIVE (CELULAR)   */
 /* ---------------------- */
 
@@ -466,7 +506,8 @@ tbody tr:hover {
     }
 
     .btn-agregar {
-        margin-top: 4px;
+        margin-left: 2px;
+        margin-top: 2px;
     }
 
     .presupuesto-footer {
