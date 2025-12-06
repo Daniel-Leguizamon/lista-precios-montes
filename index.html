@@ -4,10 +4,10 @@
 <meta charset="UTF-8">
 <title>Lista de Precios - Montes</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<link rel="stylesheet" href="styles.css">
- <link rel="icon" type="image/png" href="favicon.png?v=1">
+<link rel="stylesheet" href="styles.css?v=2">
+<link rel="icon" type="image/png" href="favicon.png?v=1">
 </head>
-    
+
 <body>
 
 <div class="container">
@@ -29,18 +29,34 @@
             <tr>
                 <th>Producto</th>
                 <th>Rubro</th>
-                <th>Precio</th>
+                <th class="th-precio">Precio</th>
+                <th>Agregar</th>
             </tr>
         </thead>
         <tbody id="tabla">
         </tbody>
     </table>
 
-</div>
+    <!-- Sección de presupuesto / carrito -->
+    <div id="presupuesto" class="presupuesto">
+        <h2>Presupuesto</h2>
+        <div id="presupuesto-lista" class="presupuesto-lista">
+            <p class="presupuesto-vacio">No hay productos en el presupuesto.</p>
+        </div>
+        <div class="presupuesto-footer">
+            <span id="presupuesto-total" class="presupuesto-total">Total: $ 0</span>
+            <div class="presupuesto-buttons">
+                <button id="btn-vaciar" type="button" class="btn-secundario">Vaciar</button>
+                <button id="btn-whatsapp" type="button" class="btn-principal">Enviar por WhatsApp</button>
+            </div>
+        </div>
+    </div>
 
+</div>
 
 <script>
     let datos = [];
+    let carrito = [];
 
     async function cargarCSV() {
         const response = await fetch("./lista_precios.csv");
@@ -56,14 +72,27 @@
 
             let descripcion = cols[0]?.trim() || "";
             let rubro = cols[1]?.trim() || "";
-            let precio = cols[2]?.trim() || "";
+            let precioTexto = cols[2]?.trim() || "";
 
             // Arreglo rubro “no encontrado” → Cervezas
             if (rubro.toLowerCase().includes("no encontrado")) {
                 rubro = "Cervezas";
             }
 
-            datos.push({ descripcion, rubro, precio });
+            // Convertimos precio a número
+            let precioNumero = Number(
+                precioTexto
+                    .replace(/\./g, "")    // sacamos separador de miles si lo hubiera
+                    .replace(",", ".")     // cambiamos coma por punto
+                    .replace(/[^0-9.]/g, "") // sacamos cualquier cosa rara
+            ) || 0;
+
+            datos.push({
+                id: i - 1,
+                descripcion,
+                rubro,
+                precio: precioNumero
+            });
         }
 
         cargarRubros();
@@ -90,12 +119,15 @@
         lista.forEach(item => {
             let tr = document.createElement("tr");
 
-            let precioFormateado = "$ " + Number(item.precio).toLocaleString("es-AR");
+            let precioFormateado = "$ " + item.precio.toLocaleString("es-AR");
 
             tr.innerHTML = `
                 <td>${item.descripcion}</td>
                 <td>${item.rubro}</td>
-                <td>${precioFormateado}</td>
+                <td class="col-precio">${precioFormateado}</td>
+                <td>
+                    <button type="button" class="btn-agregar" data-id="${item.id}">+</button>
+                </td>
             `;
 
             tabla.appendChild(tr);
@@ -117,11 +149,112 @@
         mostrarTabla(filtrados);
     }
 
+    // Delegación de eventos para botones "Agregar"
+    document.getElementById("tabla").addEventListener("click", function(e) {
+        if (e.target.classList.contains("btn-agregar")) {
+            const id = Number(e.target.dataset.id);
+            agregarAlCarrito(id);
+        }
+    });
+
+    function agregarAlCarrito(idProducto) {
+        const producto = datos.find(d => d.id === idProducto);
+        if (!producto) return;
+
+        let item = carrito.find(p => p.id === idProducto);
+        if (item) {
+            item.cantidad += 1;
+        } else {
+            carrito.push({
+                id: producto.id,
+                descripcion: producto.descripcion,
+                precio: producto.precio,
+                cantidad: 1
+            });
+        }
+
+        mostrarCarrito();
+    }
+
+    function mostrarCarrito() {
+        const cont = document.getElementById("presupuesto-lista");
+        const totalSpan = document.getElementById("presupuesto-total");
+
+        if (carrito.length === 0) {
+            cont.innerHTML = `<p class="presupuesto-vacio">No hay productos en el presupuesto.</p>`;
+            totalSpan.textContent = "Total: $ 0";
+            return;
+        }
+
+        let total = 0;
+        let html = "<ul>";
+
+        carrito.forEach(item => {
+            const subtotal = item.precio * item.cantidad;
+            total += subtotal;
+
+            html += `
+                <li>
+                    <span class="pres-desc">${item.descripcion}</span>
+                    <span class="pres-cant">x${item.cantidad}</span>
+                    <span class="pres-sub">$ ${subtotal.toLocaleString("es-AR")}</span>
+                </li>
+            `;
+        });
+
+        html += "</ul>";
+        cont.innerHTML = html;
+        totalSpan.textContent = "Total: $ " + total.toLocaleString("es-AR");
+    }
+
+    function generarTextoPresupuesto() {
+        if (carrito.length === 0) {
+            return "Presupuesto - Montes\n\n(Sin productos seleccionados)";
+        }
+
+        let lineas = [];
+        lineas.push("Presupuesto - Montes");
+        lineas.push("");
+
+        let total = 0;
+        carrito.forEach(item => {
+            const subtotal = item.precio * item.cantidad;
+            total += subtotal;
+            lineas.push(`• ${item.descripcion} x${item.cantidad} - $ ${subtotal.toLocaleString("es-AR")}`);
+        });
+
+        lineas.push("");
+        lineas.push("Total: $ " + total.toLocaleString("es-AR"));
+        lineas.push("");
+        lineas.push("Montes • Almacén de Bebidas");
+
+        return lineas.join("\n");
+    }
+
+    document.getElementById("btn-vaciar").addEventListener("click", function() {
+        carrito = [];
+        mostrarCarrito();
+    });
+
+    document.getElementById("btn-whatsapp").addEventListener("click", function() {
+        if (carrito.length === 0) {
+            alert("No hay productos en el presupuesto.");
+            return;
+        }
+
+        const texto = generarTextoPresupuesto();
+        const url = "https://wa.me/?text=" + encodeURIComponent(texto);
+        window.open(url, "_blank");
+    });
+
     cargarCSV();
 </script>
 
 </body>
 </html>
+
+</html>
+
 
 
 
