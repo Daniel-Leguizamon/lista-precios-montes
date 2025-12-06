@@ -41,7 +41,6 @@ body {
     padding: 24px 24px 28px;
     border-radius: 16px;
     border: 2px solid #d4a94a;
-    overflow-x: hidden; /* 👈 evita que la tabla rompa el borde */
 
     /* Glow dorado + animación respirando */
     box-shadow:
@@ -69,7 +68,7 @@ body {
 }
 
 /* ---------------------- */
-/* HEADER CON LOGO */
+/* HEADER */
 /* ---------------------- */
 
 .header {
@@ -86,6 +85,7 @@ body {
 .logo {
     height: 54px;
     width: auto;
+    display: block;
     border-radius: 6px;
 }
 
@@ -93,6 +93,7 @@ body {
     margin: 0;
     font-size: 24px;
     font-weight: 700;
+    letter-spacing: 0.5px;
     color: #f7e4b0;
     text-shadow:
         0 0 12px rgba(212, 169, 74, 0.7),
@@ -119,17 +120,19 @@ body {
     border: 1px solid #3c3c3c;
     background: #121212;
     color: #f0f0f0;
-    transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.12s ease;
-}
-
-.filters input::placeholder {
-    color: #8a8a8a;
+    transition:
+        border-color 0.2s ease,
+        box-shadow 0.2s ease,
+        background 0.2s ease,
+        transform 0.12s ease;
 }
 
 .filters input:focus,
 .filters select:focus {
+    outline: none;
     border-color: #f1c75a;
-    box-shadow: 0 0 10px rgba(241,199,90,0.8);
+    box-shadow: 0 0 10px rgba(241, 199, 90, 0.8);
+    background: #151515;
     transform: translateY(-1px);
 }
 
@@ -147,7 +150,6 @@ body {
 
 table {
     width: 100%;
-    table-layout: fixed; /* 👈 evita que se ensanche */
     border-collapse: collapse;
     margin-top: 6px;
     font-size: 14px;
@@ -158,14 +160,7 @@ th {
     color: #f6eac2;
     padding: 10px;
     border-bottom: 3px solid #d4a94a;
-}
-
-td {
-    padding: 8px 10px;
-    border-bottom: 1px solid #262626;
-    color: #e0e0e0;
-    word-wrap: break-word;
-    overflow-wrap: break-word; /* 👈 texto larga ya no rompe nada */
+    font-weight: 600;
 }
 
 .th-precio,
@@ -174,8 +169,26 @@ td {
     white-space: nowrap;
 }
 
-tbody tr:nth-child(odd) { background: #161616; }
-tbody tr:nth-child(even) { background: #1c1c1c; }
+td {
+    padding: 8px 10px;
+    border-bottom: 1px solid #262626;
+    color: #e0e0e0;
+}
+
+tbody tr:nth-child(odd) {
+    background: #161616;
+}
+
+tbody tr:nth-child(even) {
+    background: #1c1c1c;
+}
+
+tbody tr {
+    transition:
+        background 0.15s ease,
+        box-shadow 0.15s ease,
+        transform 0.12s ease;
+}
 
 tbody tr:hover {
     background: #3a301c;
@@ -184,49 +197,65 @@ tbody tr:hover {
 }
 
 /* ---------------------- */
-/* CONTROL DE CANTIDAD */
+/* CONTROL DE CANTIDAD (PC) */
 /* ---------------------- */
 
 .qty-wrapper {
     display: inline-flex;
     align-items: center;
     justify-content: flex-end;
-    gap: 4px;
+    gap: 6px;
+    flex-wrap: nowrap;
 }
 
 .qty-label {
-    font-size: 11px;
+    font-size: 12px;
     color: #ccc;
 }
 
 .qty-btn {
-    width: 22px;
-    height: 22px;
+    width: 24px;
+    height: 24px;
     border-radius: 4px;
-    border: 1px solid #555;
-    background: #252525;
-    color: #eee;
+    border: 1px solid #d4a94a55;
+    background: #1f1f1f;
+    color: #f7e4b0;
     cursor: pointer;
+    font-size: 14px;
+    transition: 0.15s ease;
+}
+
+.qty-btn:hover {
+    background: #d4a94a;
+    color: #181818;
+    transform: translateY(-1px);
 }
 
 .qty-input {
-    width: 40px;
+    width: 42px;
     padding: 2px 4px;
-    border-radius: 4px;
-    border: 1px solid #555;
-    background: #111;
-    color: #f0f0f0;
     text-align: center;
-    font-size: 12px;
+    background: #111;
+    color: #fff;
+    border: 1px solid #444;
+    border-radius: 4px;
 }
 
 .btn-agregar {
-    padding: 3px 7px;
-    font-size: 12px;
+    padding: 4px 10px;
+    font-size: 13px;
     border-radius: 6px;
     border: 1px solid #d4a94a;
-    background: #1c1c1c;
+    background: #2a2a2a;
     color: #f7e4b0;
+    cursor: pointer;
+    transition: 0.15s ease;
+}
+
+.btn-agregar:hover {
+    background: #d4a94a;
+    color: #181818;
+    transform: translateY(-1px);
 }
 
 .btn-agregar-ok {
@@ -241,7 +270,7 @@ tbody tr:hover {
 .presupuesto {
     margin-top: 24px;
     padding-top: 14px;
-    border-top: 1px solid rgba(212,169,74,0.4);
+    border-top: 1px solid rgba(212, 169, 74, 0.4);
 }
 
 .presupuesto h2 {
@@ -256,22 +285,73 @@ tbody tr:hover {
     color: #d0c089;
 }
 
+.presupuesto-flash {
+    animation: presFlash 0.5s ease-out;
+}
+
+@keyframes presFlash {
+    50% { box-shadow: 0 0 16px rgba(212,169,74,0.8); }
+}
+
 .presupuesto-lista ul {
     list-style: none;
     padding: 0;
-    margin: 0 0 8px;
+    margin: 0;
 }
 
-.pres-desc { flex: 1; }
+.presupuesto-lista li {
+    display: flex;
+    justify-content: space-between;
+    gap: 8px;
+    padding: 4px 0;
+    font-size: 14px;
+    border-bottom: 1px dashed #333;
+}
 
 .input-cant {
     width: 60px;
     padding: 2px 4px;
-    border-radius: 4px;
-    border: 1px solid #555;
-    background: #111;
-    color: #eee;
     text-align: center;
+    background: #111;
+    border: 1px solid #444;
+    border-radius: 4px;
+    color: #fff;
+}
+
+.pres-sub {
+    min-width: 90px;
+    color: #f2d68a;
+    text-align: right;
+}
+
+.presupuesto-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 8px;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.btn-principal,
+.btn-secundario {
+    padding: 6px 10px;
+    border-radius: 6px;
+    cursor: pointer;
+    border: 1px solid transparent;
+    font-size: 13px;
+}
+
+.btn-principal {
+    background: #d4a94a;
+    color: #181818;
+    font-weight: bold;
+}
+
+.btn-secundario {
+    background: #252525;
+    color: #eee;
+    border-color: #555;
 }
 
 /* ---------------------- */
@@ -285,64 +365,90 @@ tbody tr:hover {
     width: 44px;
     height: 44px;
     border-radius: 50%;
-    border: 2px solid #d4a94a;
     background: #181818;
-    color: #ffffff;
-    cursor: pointer;
+    border: 2px solid #d4a94a;
+    color: white;
     display: none;
     align-items: center;
     justify-content: center;
     font-size: 22px;
+    cursor: pointer;
+    z-index: 999;
 }
 
-.btn-flotante.visible { display: flex; }
+.btn-flotante.visible {
+    display: flex;
+}
+
+.btn-flotante:hover {
+    background: #d4a94a;
+    color: #181818;
+}
 
 /* ---------------------- */
 /* RESPONSIVE CELULAR */
 /* ---------------------- */
-
 @media (max-width: 700px) {
 
-    body { padding: 10px; }
+    body {
+        padding: 10px;
+    }
 
     .container {
         padding: 16px 12px 20px;
         border-radius: 14px;
     }
 
-    /* TABLA MÁS PEQUEÑA */
-    table { font-size: 12px; }
-
-    td, th {
-        padding: 7px 5px;
+    .logo {
+        height: 42px;
     }
 
-    /* Reduzco la columna Agregar */
-    td:last-child {
-        width: 90px; /* 👈 clave */
+    .header h1 {
+        font-size: 20px;
     }
 
-    /* Ocultamos 'Cant.' */
-    .qty-label { display: none; }
+    .filters {
+        flex-direction: column;
+        gap: 8px;
+    }
 
-    /* Botones más chicos */
+    table {
+        font-size: 12px;
+    }
+
+    /* 🔥 CONTROL DE CANTIDAD COMPACTO */
+    .qty-wrapper {
+        justify-content: flex-start;
+        gap: 3px;
+        flex-wrap: nowrap;
+    }
+
+    .qty-label {
+        display: none; /* afuera "Cant." */
+    }
+
     .qty-btn {
-        width: 20px;
-        height: 20px;
-        font-size: 11px;
+        width: 22px;
+        height: 22px;
+        font-size: 12px;
     }
 
     .qty-input {
-        width: 32px;
+        width: 28px;
         font-size: 11px;
+        padding: 2px;
     }
 
     .btn-agregar {
-        padding: 3px 5px;
-        font-size: 10px;
+        padding: 3px 6px;
+        font-size: 11px;
+        white-space: nowrap;
     }
 
-    /* Botón flotante más grande */
+    td:nth-child(4), th:nth-child(4) {
+        width: 100px !important;
+    }
+
     .btn-flotante {
         right: 16px;
         bottom: 16px;
