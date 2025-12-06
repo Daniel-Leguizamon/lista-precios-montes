@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <title>Lista de Precios - Montes</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<link rel="stylesheet" href="styles.css?v=5">
+<link rel="stylesheet" href="styles.css?v=6">
 <link rel="icon" type="image/png" href="favicon.png?v=1">
 </head>
 
@@ -57,17 +57,18 @@
 
 </div>
 
-<!-- Botón flotante para ir al presupuesto -->
+<!-- Botón flotante para ir al presupuesto / volver arriba -->
 <button id="btn-ir-presupuesto" class="btn-flotante" type="button" title="Ir al presupuesto">↓</button>
 
 <script>
     let datos = [];
     let carrito = [];
     const btnIrPresupuesto = document.getElementById("btn-ir-presupuesto");
+    let modoIrArriba = false; // false = bajar al presupuesto, true = subir al buscador
 
-    // -------------------------
+    // ---------------------------
     // CARGAR CSV
-    // -------------------------
+    // ---------------------------
     async function cargarCSV() {
         const response = await fetch("./lista_precios.csv");
         const buffer = await response.arrayBuffer();
@@ -75,7 +76,6 @@
 
         let lineas = texto.split("\n").map(l => l.trim());
 
-        // Ignoramos encabezado (fila 0)
         for (let i = 1; i < lineas.length; i++) {
             if (!lineas[i]) continue;
             let cols = lineas[i].split(";");
@@ -84,17 +84,15 @@
             let rubro = cols[1]?.trim() || "";
             let precioTexto = cols[2]?.trim() || "";
 
-            // Arreglo rubro “no encontrado” → Cervezas
             if (rubro.toLowerCase().includes("no encontrado")) {
                 rubro = "Cervezas";
             }
 
-            // Convertimos precio a número
             let precioNumero = Number(
                 precioTexto
-                    .replace(/\./g, "")        // separador miles
-                    .replace(",", ".")         // coma -> punto
-                    .replace(/[^0-9.]/g, "")   // basura
+                    .replace(/\./g, "")
+                    .replace(",", ".")
+                    .replace(/[^0-9.]/g, "")
             ) || 0;
 
             datos.push({
@@ -109,12 +107,8 @@
         mostrarTabla(datos);
     }
 
-    // -------------------------
-    // RUBROS EN EL SELECT
-    // -------------------------
     function cargarRubros() {
         let select = document.getElementById("filtroRubro");
-
         let rubros = [...new Set(datos.map(d => d.rubro))].sort();
 
         rubros.forEach(r => {
@@ -125,16 +119,15 @@
         });
     }
 
-    // -------------------------
-    // ARMAR TABLA
-    // -------------------------
+    // ---------------------------
+    // TABLA
+    // ---------------------------
     function mostrarTabla(lista) {
         let tabla = document.getElementById("tabla");
         tabla.innerHTML = "";
 
         lista.forEach(item => {
             let tr = document.createElement("tr");
-
             let precioFormateado = "$ " + item.precio.toLocaleString("es-AR");
 
             tr.innerHTML = `
@@ -143,27 +136,21 @@
                 <td class="col-precio">${precioFormateado}</td>
                 <td>
                     <div class="qty-wrapper" data-id="${item.id}">
-                        <!-- Botón principal (visible siempre) -->
+                        <span class="qty-label">Cant.</span>
+                        <button type="button" class="qty-btn qty-minus" data-id="${item.id}">-</button>
+                        <input type="number" min="1" value="1" class="qty-input" data-id="${item.id}">
+                        <button type="button" class="qty-btn qty-plus" data-id="${item.id}">+</button>
                         <button type="button" class="btn-agregar" data-id="${item.id}">Agregar</button>
-
-                        <!-- Controles que se despliegan en celular -->
-                        <div class="qty-controls">
-                            <button type="button" class="qty-btn qty-minus" data-id="${item.id}">-</button>
-                            <input type="number" min="1" value="1" class="qty-input" data-id="${item.id}">
-                            <button type="button" class="qty-btn qty-plus" data-id="${item.id}">+</button>
-                            <button type="button" class="btn-confirm" data-id="${item.id}">✔️</button>
-                        </div>
                     </div>
                 </td>
             `;
-
             tabla.appendChild(tr);
         });
     }
 
-    // -------------------------
-    // BUSCADOR Y FILTRO POR RUBRO
-    // -------------------------
+    // ---------------------------
+    // FILTROS
+    // ---------------------------
     document.getElementById("buscar").addEventListener("input", filtrar);
     document.getElementById("filtroRubro").addEventListener("change", filtrar);
 
@@ -179,42 +166,13 @@
         mostrarTabla(filtrados);
     }
 
-    // -------------------------
-    // CLICK EN LA TABLA (CANTIDAD / AGREGAR / CONFIRMAR)
-    // -------------------------
+    // ---------------------------
+    // CLICK EN TABLA (CANTIDAD + AGREGAR)
+    // ---------------------------
     document.getElementById("tabla").addEventListener("click", function(e) {
         const target = e.target;
 
-        // A) ABRIR/CERRAR PANEL EN CELULAR (botón Agregar)
-        if (target.classList.contains("btn-agregar")) {
-            const wrapper = target.closest(".qty-wrapper");
-            if (!wrapper) return;
-
-            // En mobile: abre/cierra el panel
-            wrapper.classList.toggle("open");
-
-            // En escritorio: si quisieras que agregue directo,
-            // se puede hacer acá, pero por ahora lo usamos igual que en mobile.
-            return;
-        }
-
-        // B) CONFIRMAR ✔️ (celular)
-        if (target.classList.contains("btn-confirm")) {
-            const wrapper = target.closest(".qty-wrapper");
-            if (!wrapper) return;
-
-            const input = wrapper.querySelector(".qty-input");
-            const id = Number(target.dataset.id);
-            let cantidad = parseInt(input.value, 10) || 1;
-
-            agregarAlCarrito(id, cantidad);
-
-            // cerrar panel
-            wrapper.classList.remove("open");
-            return;
-        }
-
-        // C) BOTONES + Y - (escritorio + celular)
+        // Botones + y -
         if (target.classList.contains("qty-btn")) {
             const wrapper = target.closest(".qty-wrapper");
             if (!wrapper) return;
@@ -232,11 +190,40 @@
             input.value = valor;
             return;
         }
+
+        // Botón Agregar
+        if (target.classList.contains("btn-agregar")) {
+            const wrapper = target.closest(".qty-wrapper");
+            if (!wrapper) return;
+
+            const input = wrapper.querySelector(".qty-input");
+            let cantidad = parseInt(input.value, 10) || 1;
+            const id = Number(wrapper.dataset.id);
+
+            // MODO CELU: primer toque solo abre los controles
+            if (window.innerWidth <= 700 && !wrapper.classList.contains("open")) {
+                wrapper.classList.add("open");
+                target.textContent = "OK";
+                return;
+            }
+
+            agregarAlCarrito(id, cantidad);
+
+            // feedback visual
+            target.classList.add("btn-agregar-ok");
+            setTimeout(() => target.classList.remove("btn-agregar-ok"), 200);
+
+            // en celu, cerramos panel y volvemos el texto
+            if (window.innerWidth <= 700) {
+                wrapper.classList.remove("open");
+                target.textContent = "Agregar";
+            }
+        }
     });
 
-    // -------------------------
-    // AGREGAR AL CARRITO
-    // -------------------------
+    // ---------------------------
+    // CARRITO
+    // ---------------------------
     function agregarAlCarrito(idProducto, cantidad) {
         const producto = datos.find(d => d.id === idProducto);
         if (!producto) return;
@@ -256,14 +243,10 @@
         mostrarCarrito();
     }
 
-    // -------------------------
-    // MOSTRAR CARRITO / PRESUPUESTO
-    // -------------------------
     function mostrarCarrito() {
         const cont = document.getElementById("presupuesto-lista");
         const totalSpan = document.getElementById("presupuesto-total");
         const resumenSpan = document.getElementById("presupuesto-resumen");
-        const presupuestoDiv = document.getElementById("presupuesto");
 
         if (carrito.length === 0) {
             cont.innerHTML = `<p class="presupuesto-vacio">No hay productos en el presupuesto.</p>`;
@@ -302,19 +285,13 @@
             resumenSpan.textContent = `(${txt})`;
         }
 
-        // flash dorado
-        presupuestoDiv.classList.add("presupuesto-flash");
-        setTimeout(() => presupuestoDiv.classList.remove("presupuesto-flash"), 500);
-
         // mostrar botón flotante
         if (btnIrPresupuesto) {
             btnIrPresupuesto.classList.add("visible");
         }
     }
 
-    // -------------------------
-    // CAMBIAR CANTIDAD DESDE EL PRESUPUESTO
-    // -------------------------
+    // Cambiar cantidades desde el presupuesto
     document.getElementById("presupuesto-lista").addEventListener("change", function(e) {
         if (e.target.classList.contains("input-cant")) {
             const id = Number(e.target.dataset.id);
@@ -332,16 +309,15 @@
         }
     });
 
-    // -------------------------
-    // TEXTO PARA WHATSAPP
-    // -------------------------
+    // ---------------------------
+    // WHATSAPP
+    // ---------------------------
     function generarTextoPresupuesto() {
         if (carrito.length === 0) {
             return "Hola! Quisiera consultar la disponibilidad de los siguientes productos para realizar una compra.\n\n(Sin productos seleccionados)";
         }
 
         let lineas = [];
-
         lineas.push("Hola! Quisiera consultar la disponibilidad de los siguientes productos para realizar una compra.");
         lineas.push("");
 
@@ -360,17 +336,11 @@
         return lineas.join("\n");
     }
 
-    // -------------------------
-    // BOTÓN VACIAR
-    // -------------------------
     document.getElementById("btn-vaciar").addEventListener("click", function() {
         carrito = [];
         mostrarCarrito();
     });
 
-    // -------------------------
-    // BOTÓN WHATSAPP
-    // -------------------------
     document.getElementById("btn-whatsapp").addEventListener("click", function() {
         if (carrito.length === 0) {
             alert("No hay productos en el presupuesto.");
@@ -385,19 +355,11 @@
     // ---------------------------
     // BOTÓN FLOTANTE: SUBIR / BAJAR
     // ---------------------------
-    let modoIrArriba = false; // false = bajar al presupuesto, true = subir al buscador
-
     if (btnIrPresupuesto) {
-        // Click en el botón
         btnIrPresupuesto.addEventListener("click", () => {
             if (modoIrArriba) {
-                // Subir al principio (buscador)
-                window.scrollTo({
-                    top: 0,
-                    behavior: "smooth"
-                });
+                window.scrollTo({ top: 0, behavior: "smooth" });
             } else {
-                // Bajar al presupuesto
                 const presupuestoDiv = document.getElementById("presupuesto");
                 if (presupuestoDiv) {
                     presupuestoDiv.scrollIntoView({ behavior: "smooth" });
@@ -405,9 +367,7 @@
             }
         });
 
-        // Cambiar la flecha según el scroll
         window.addEventListener("scroll", () => {
-            // si no hay carrito visible, no hacemos nada
             if (!btnIrPresupuesto.classList.contains("visible")) return;
 
             if (window.scrollY < 150) {
@@ -420,13 +380,13 @@
         });
     }
 
-    // -------------------------
-    // INICIO
-    // -------------------------
+    // Iniciar
     cargarCSV();
 </script>
+
 </body>
 </html>
+
 
 
 
