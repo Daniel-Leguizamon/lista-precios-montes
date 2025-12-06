@@ -211,8 +211,6 @@
         const producto = datos.find(d => d.id === idProducto);
         if (!producto) return;
 
-        const estabaVacio = (carrito.length === 0);
-
         let item = carrito.find(p => p.id === idProducto);
         if (item) {
             item.cantidad += cantidad;
@@ -226,14 +224,6 @@
         }
 
         mostrarCarrito();
-
-        // primera vez que agregás algo, en celu te lleva al presupuesto
-        if (estabaVacio && window.innerWidth <= 700) {
-            const presupuestoDiv = document.getElementById("presupuesto");
-            if (presupuestoDiv) {
-                presupuestoDiv.scrollIntoView({ behavior: "smooth" });
-            }
-        }
     }
 
     function mostrarCarrito() {
@@ -309,11 +299,12 @@
 
     function generarTextoPresupuesto() {
         if (carrito.length === 0) {
-            return "Presupuesto - Montes\n\n(Sin productos seleccionados)";
+            return "Hola! Quisiera consultar la disponibilidad de los siguientes productos para realizar una compra.\n\n(Sin productos seleccionados)";
         }
 
         let lineas = [];
-        lineas.push("Presupuesto - Montes");
+
+        lineas.push("Hola! Quisiera consultar la disponibilidad de los siguientes productos para realizar una compra.");
         lineas.push("");
 
         let total = 0;
@@ -324,7 +315,7 @@
         });
 
         lineas.push("");
-        lineas.push("Total: $ " + total.toLocaleString("es-AR"));
+        lineas.push("Total aproximado: $ " + total.toLocaleString("es-AR"));
         lineas.push("");
         lineas.push("Montes • Almacén de Bebidas");
 
@@ -365,6 +356,5 @@
 
 </body>
 </html>
-
 
 
