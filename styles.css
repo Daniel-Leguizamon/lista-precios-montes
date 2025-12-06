@@ -18,7 +18,6 @@ body {
     padding: 24px;
     color: #eee;
 
-    /* Fondo oscuro + textura suave */
     background:
         radial-gradient(circle at top, #262626 0, #101010 45%, #050505 100%),
         repeating-linear-gradient(
@@ -42,7 +41,6 @@ body {
     border-radius: 16px;
     border: 2px solid #d4a94a;
 
-    /* Glow dorado + animación respirando */
     box-shadow:
         0 0 30px rgba(212, 169, 74, 0.45),
         0 0 14px rgba(0, 0, 0, 0.9);
@@ -50,20 +48,10 @@ body {
 }
 
 @keyframes goldPulse {
-    0% {
-        box-shadow:
-            0 0 26px rgba(212, 169, 74, 0.4),
-            0 0 14px rgba(0, 0, 0, 0.9);
-    }
     50% {
         box-shadow:
             0 0 52px rgba(212, 169, 74, 0.8),
             0 0 20px rgba(0, 0, 0, 1);
-    }
-    100% {
-        box-shadow:
-            0 0 26px rgba(212, 169, 74, 0.4),
-            0 0 14px rgba(0, 0, 0, 0.9);
     }
 }
 
@@ -79,21 +67,15 @@ body {
     margin-bottom: 20px;
     padding-bottom: 12px;
     border-bottom: 3px solid #d4a94a;
-    text-align: center;
 }
 
 .logo {
     height: 54px;
-    width: auto;
-    display: block;
-    border-radius: 6px;
 }
 
 .header h1 {
-    margin: 0;
     font-size: 24px;
     font-weight: 700;
-    letter-spacing: 0.5px;
     color: #f7e4b0;
     text-shadow:
         0 0 12px rgba(212, 169, 74, 0.7),
@@ -120,16 +102,11 @@ body {
     border: 1px solid #3c3c3c;
     background: #121212;
     color: #f0f0f0;
-    transition:
-        border-color 0.2s ease,
-        box-shadow 0.2s ease,
-        background 0.2s ease,
-        transform 0.12s ease;
+    transition: 0.2s ease;
 }
 
 .filters input:focus,
 .filters select:focus {
-    outline: none;
     border-color: #f1c75a;
     box-shadow: 0 0 10px rgba(241, 199, 90, 0.8);
     background: #151515;
@@ -175,19 +152,11 @@ td {
     color: #e0e0e0;
 }
 
-tbody tr:nth-child(odd) {
-    background: #161616;
-}
-
-tbody tr:nth-child(even) {
-    background: #1c1c1c;
-}
+tbody tr:nth-child(odd) { background: #161616; }
+tbody tr:nth-child(even) { background: #1c1c1c; }
 
 tbody tr {
-    transition:
-        background 0.15s ease,
-        box-shadow 0.15s ease,
-        transform 0.12s ease;
+    transition: 0.15s ease;
 }
 
 tbody tr:hover {
@@ -205,12 +174,6 @@ tbody tr:hover {
     align-items: center;
     justify-content: flex-end;
     gap: 6px;
-    flex-wrap: nowrap;
-}
-
-.qty-label {
-    font-size: 12px;
-    color: #ccc;
 }
 
 .qty-btn {
@@ -255,7 +218,6 @@ tbody tr:hover {
 .btn-agregar:hover {
     background: #d4a94a;
     color: #181818;
-    transform: translateY(-1px);
 }
 
 .btn-agregar-ok {
@@ -274,14 +236,10 @@ tbody tr:hover {
 }
 
 .presupuesto h2 {
-    font-size: 18px;
-    margin: 0 0 10px;
     color: #f7e4b0;
 }
 
 .presupuesto-resumen {
-    font-size: 13px;
-    margin-left: 6px;
     color: #d0c089;
 }
 
@@ -293,19 +251,12 @@ tbody tr:hover {
     50% { box-shadow: 0 0 16px rgba(212,169,74,0.8); }
 }
 
-.presupuesto-lista ul {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-}
-
 .presupuesto-lista li {
     display: flex;
     justify-content: space-between;
-    gap: 8px;
     padding: 4px 0;
-    font-size: 14px;
     border-bottom: 1px dashed #333;
+    font-size: 14px;
 }
 
 .input-cant {
@@ -327,7 +278,6 @@ tbody tr:hover {
 .presupuesto-footer {
     display: flex;
     justify-content: space-between;
-    align-items: center;
     margin-top: 8px;
     flex-wrap: wrap;
     gap: 8px;
@@ -338,7 +288,6 @@ tbody tr:hover {
     padding: 6px 10px;
     border-radius: 6px;
     cursor: pointer;
-    border: 1px solid transparent;
     font-size: 13px;
 }
 
@@ -351,7 +300,7 @@ tbody tr:hover {
 .btn-secundario {
     background: #252525;
     color: #eee;
-    border-color: #555;
+    border: 1px solid #555;
 }
 
 /* ---------------------- */
@@ -373,86 +322,31 @@ tbody tr:hover {
     justify-content: center;
     font-size: 22px;
     cursor: pointer;
-    z-index: 999;
-}
-
-.btn-flotante.visible {
-    display: flex;
-}
-
-.btn-flotante:hover {
-    background: #d4a94a;
-    color: #181818;
 }
 
 /* ---------------------- */
 /* RESPONSIVE CELULAR */
 /* ---------------------- */
-/* ---------------------- */
-/* RESPONSIVE (CELULAR)   */
-/* ---------------------- */
+
 @media (max-width: 700px) {
 
-    body {
-        padding: 10px;
-    }
+    body { padding: 10px; }
+    .container { padding: 16px 12px 20px; }
 
-    .container {
-        padding: 16px 12px 20px;
-        border-radius: 14px;
-        margin: 0 auto;
-    }
-
-    /* Header */
     .header {
         flex-direction: column;
         gap: 6px;
-        padding-bottom: 10px;
-        margin-bottom: 14px;
     }
 
-    .logo {
-        height: 42px;
-    }
-
-    .header h1 {
-        font-size: 20px;
-    }
-
-    /* Filtros */
-    .filters {
-        flex-direction: column;
-        gap: 8px;
-    }
-
-    .filters input,
-    .filters select {
-        width: 100%;
-        font-size: 14px;
-        padding: 9px 10px;
-    }
-
-    /* Tabla */
-    table {
-        font-size: 12px;
-    }
-
-    th,
-    td {
-        padding: 7px 6px;
-    }
-
-    /* --- MODO CELU: solo el botón Agregar visible --- */
+    /* ----------- MODO CELULAR ----------- */
 
     .qty-wrapper {
-        display: flex;
         flex-direction: column;
         align-items: flex-start;
+        width: 100%;
         gap: 4px;
-        position: relative;
     }
 
-    /* Ocultamos controles de cantidad por defecto */
     .qty-controls {
         display: none;
         flex-direction: row;
@@ -462,23 +356,33 @@ tbody tr:hover {
         padding: 4px;
         border-radius: 6px;
         border: 1px solid #444;
-        width: auto;
+        width: 100%;
     }
 
-    /* Cuando el wrapper tiene la clase open → aparece */
     .qty-wrapper.open .qty-controls {
         display: flex;
     }
 
-    /* Botón Agregar (se mantiene igual visualmente) */
+    .qty-wrapper.open .btn-agregar {
+        display: none;
+    }
+
     .btn-agregar {
         width: 100%;
         text-align: center;
-        font-size: 12px;
-        padding: 4px 6px;
     }
 
-    /* Botones + y - */
+    .btn-confirm {
+        background: #d4a94a;
+        color: #181818;
+        border-radius: 4px;
+        padding: 3px 7px;
+        font-size: 12px;
+        border: none;
+        cursor: pointer;
+        font-weight: bold;
+    }
+
     .qty-btn {
         width: 26px;
         height: 26px;
@@ -488,19 +392,6 @@ tbody tr:hover {
     .qty-input {
         width: 40px;
         font-size: 12px;
-        text-align: center;
-    }
-
-    /* Botón Confirmar ✔️ */
-    .btn-confirm {
-        background: #d4a94a;
-        color: #181818;
-        border-radius: 4px;
-        padding: 3px 7px;
-        font-size: 12px;
-        font-weight: 600;
-        border: none;
-        cursor: pointer;
     }
 
     /* Carrito */
@@ -508,24 +399,6 @@ tbody tr:hover {
         font-size: 12px;
     }
 
-    .pres-sub {
-        min-width: 80px;
-        font-size: 12px;
-    }
-
-    .presupuesto-footer {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 6px;
-    }
-
-    .btn-principal,
-    .btn-secundario {
-        font-size: 12px;
-        padding: 6px 10px;
-    }
-
-    /* Botón flotante más grande */
     .btn-flotante {
         right: 16px;
         bottom: 16px;
@@ -534,6 +407,4 @@ tbody tr:hover {
         font-size: 26px;
     }
 }
-
-
 
