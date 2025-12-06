@@ -134,12 +134,20 @@
                 <td class="col-precio">${precioFormateado}</td>
                 <td>
                     <div class="qty-wrapper" data-id="${item.id}">
-                        <span class="qty-label">Cant.</span>
-                        <button type="button" class="qty-btn qty-minus" data-id="${item.id}">-</button>
-                        <input type="number" min="1" value="1" class="qty-input" data-id="${item.id}">
-                        <button type="button" class="qty-btn qty-plus" data-id="${item.id}">+</button>
-                        <button type="button" class="btn-agregar" data-id="${item.id}">Agregar</button>
-                    </div>
+    
+    <!-- Botón principal (único visible en móvil) -->
+    <button type="button" class="btn-agregar" data-id="${item.id}">Agregar</button>
+
+    <!-- Controles que se despliegan en celular -->
+    <div class="qty-controls">
+        <button type="button" class="qty-btn qty-minus" data-id="${item.id}">-</button>
+        <input type="number" min="1" value="1" class="qty-input" data-id="${item.id}">
+        <button type="button" class="qty-btn qty-plus" data-id="${item.id}">+</button>
+        <button type="button" class="btn-confirm" data-id="${item.id}">✔️</button>
+    </div>
+
+</div>
+
                 </td>
             `;
 
@@ -164,66 +172,64 @@
 
     // Clicks en la tabla: cantidad (+/-) y Agregar
     document.getElementById("tabla").addEventListener("click", function(e) {
-        const target = e.target;
+    const target = e.target;
 
-        // Botones + y -
-        if (target.classList.contains("qty-btn")) {
-            const wrapper = target.closest(".qty-wrapper");
-            if (!wrapper) return;
-            const input = wrapper.querySelector(".qty-input");
-            if (!input) return;
+    /* ------------------------- */
+    /*  A) ABRIR/CERRAR PANEL EN CELULAR */
+    /* ------------------------- */
+    if (target.classList.contains("btn-agregar")) {
+        const wrapper = target.closest(".qty-wrapper");
+        if (!wrapper) return;
 
-            let valor = parseInt(input.value, 10) || 1;
+        // mostrar/ocultar panel en móvil
+        wrapper.classList.toggle("open");
 
-            if (target.classList.contains("qty-plus")) {
-                valor++;
-            } else if (target.classList.contains("qty-minus")) {
-                valor = Math.max(1, valor - 1);
-            }
+        // no agregar todavía
+        return;
+    }
 
-            input.value = valor;
-            return;
+    /* ------------------------- */
+    /*  B) CONFIRMAR ✔️ EN CELULAR */
+    /* ------------------------- */
+    if (target.classList.contains("btn-confirm")) {
+        const wrapper = target.closest(".qty-wrapper");
+        if (!wrapper) return;
+
+        const input = wrapper.querySelector(".qty-input");
+        const id = Number(target.dataset.id);
+        let cantidad = parseInt(input.value, 10) || 1;
+
+        agregarAlCarrito(id, cantidad);
+
+        // cerrar panel
+        wrapper.classList.remove("open");
+
+        return;
+    }
+
+    /* ------------------------- */
+    /*  C) BOTONES + Y -  (escritorio + celular) */
+    /* ------------------------- */
+    if (target.classList.contains("qty-btn")) {
+        const wrapper = target.closest(".qty-wrapper");
+        if (!wrapper) return;
+        const input = wrapper.querySelector(".qty-input");
+        if (!input) return;
+
+        let valor = parseInt(input.value, 10) || 1;
+
+        if (target.classList.contains("qty-plus")) {
+            valor++;
+        } else if (target.classList.contains("qty-minus")) {
+            valor = Math.max(1, valor - 1);
         }
 
-        // Botón "Agregar"
-        if (target.classList.contains("btn-agregar")) {
-            const wrapper = target.closest(".qty-wrapper");
-            if (!wrapper) return;
+        input.value = valor;
+        return;
+    }
 
-            const id = Number(target.dataset.id);
-            const input = wrapper.querySelector(".qty-input");
-            let cantidad = parseInt(input.value, 10);
+});
 
-            if (isNaN(cantidad) || cantidad < 1) {
-                cantidad = 1;
-                input.value = 1;
-            }
-
-            agregarAlCarrito(id, cantidad);
-
-            // feedback visual en el botón
-            target.classList.add("btn-agregar-ok");
-            setTimeout(() => target.classList.remove("btn-agregar-ok"), 200);
-        }
-    });
-
-    function agregarAlCarrito(idProducto, cantidad) {
-        const producto = datos.find(d => d.id === idProducto);
-        if (!producto) return;
-
-        let item = carrito.find(p => p.id === idProducto);
-        if (item) {
-            item.cantidad += cantidad;
-        } else {
-            carrito.push({
-                id: producto.id,
-                descripcion: producto.descripcion,
-                precio: producto.precio,
-                cantidad: cantidad
-            });
-        }
-
-        mostrarCarrito();
     }
 
     function mostrarCarrito() {
@@ -386,6 +392,7 @@ if (btnIrPresupuesto) {
 
 </body>
 </html>
+
 
 
 
