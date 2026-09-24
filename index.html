@@ -50,7 +50,7 @@
             <span id="presupuesto-total" class="presupuesto-total">Total: $ 0</span>
             <div class="presupuesto-buttons">
                 <button id="btn-vaciar" type="button" class="btn-secundario">Vaciar</button>
-                <button id="btn-whatsapp" type="button" class="btn-principal">Enviar por WhatsApp</button>
+                <button id="btn-whatsapp" type="button" class="btn-principal">Consultar disponibilidad</button>
             </div>
         </div>
     </div>
@@ -59,6 +59,118 @@
 
 <!-- Botón flotante para ir al presupuesto / volver arriba -->
 <button id="btn-ir-presupuesto" class="btn-flotante" type="button" title="Ir al presupuesto">↓</button>
+
+
+<!-- Modal para elegir sucursal -->
+<div id="modal-sucursal" class="modal-sucursal" aria-hidden="true">
+    <div class="modal-sucursal-contenido" role="dialog" aria-modal="true" aria-labelledby="titulo-sucursal">
+        <button id="cerrar-modal-sucursal" class="modal-sucursal-cerrar" type="button" aria-label="Cerrar">×</button>
+        <h3 id="titulo-sucursal">Consultar disponibilidad</h3>
+        <div class="modal-sucursal-opciones">
+            <button id="btn-la-plata" type="button" class="btn-sucursal">
+                <span class="sucursal-label">Sucursal</span>
+                <span class="sucursal-nombre">La Plata</span>
+            </button>
+            <button id="btn-city-bell" type="button" class="btn-sucursal">
+                <span class="sucursal-label">Sucursal</span>
+                <span class="sucursal-nombre">City Bell</span>
+            </button>
+        </div>
+    </div>
+</div>
+
+<style>
+    .modal-sucursal {
+        display: none;
+        position: fixed;
+        inset: 0;
+        z-index: 9999;
+        background: rgba(0, 0, 0, 0.72);
+        align-items: center;
+        justify-content: center;
+        padding: 20px;
+    }
+
+    .modal-sucursal.visible {
+        display: flex;
+    }
+
+    .modal-sucursal-contenido {
+        position: relative;
+        width: min(420px, 100%);
+        box-sizing: border-box;
+        background: #171717;
+        border: 1px solid #a77b1d;
+        border-radius: 14px;
+        padding: 28px 22px 22px;
+        box-shadow: 0 12px 40px rgba(0, 0, 0, 0.55);
+        text-align: center;
+    }
+
+    .modal-sucursal-contenido h3 {
+        margin: 0 0 22px;
+        color: #fff;
+        font-size: 21px;
+    }
+
+    .modal-sucursal-cerrar {
+        position: absolute;
+        top: 8px;
+        right: 11px;
+        border: 0;
+        background: transparent;
+        color: #aaa;
+        font-size: 28px;
+        line-height: 1;
+        cursor: pointer;
+    }
+
+    .modal-sucursal-cerrar:hover {
+        color: #fff;
+    }
+
+    .modal-sucursal-opciones {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .btn-sucursal {
+        width: 100%;
+        border: 1px solid #a77b1d;
+        border-radius: 9px;
+        background: #202020;
+        color: #fff;
+        padding: 12px 16px;
+        cursor: pointer;
+        text-align: left;
+        transition: background 0.15s ease, transform 0.15s ease;
+    }
+
+    .btn-sucursal:hover {
+        background: #2b2b2b;
+        transform: translateY(-1px);
+    }
+
+    .sucursal-label {
+        display: inline-block;
+        margin-right: 8px;
+        color: #bdbdbd;
+        font-size: 13px;
+    }
+
+    .sucursal-nombre {
+        font-weight: 600;
+        color: #f1c75b;
+        font-size: 16px;
+    }
+
+    @media (max-width: 500px) {
+        .modal-sucursal-contenido {
+            padding: 26px 16px 18px;
+        }
+    }
+</style>
 
 <script>
     let datos = [];
@@ -344,15 +456,71 @@
         mostrarCarrito();
     });
 
-    document.getElementById("btn-whatsapp").addEventListener("click", function() {
+    // ---------------------------
+    // CONSULTAR DISPONIBILIDAD / SUCURSAL
+    // ---------------------------
+    const modalSucursal = document.getElementById("modal-sucursal");
+    const btnCerrarModalSucursal = document.getElementById("cerrar-modal-sucursal");
+    const btnLaPlata = document.getElementById("btn-la-plata");
+    const btnCityBell = document.getElementById("btn-city-bell");
+
+    function abrirModalSucursal() {
         if (carrito.length === 0) {
             alert("No hay productos en el presupuesto.");
             return;
         }
 
+        modalSucursal.classList.add("visible");
+        modalSucursal.setAttribute("aria-hidden", "false");
+    }
+
+    function cerrarModalSucursal() {
+        modalSucursal.classList.remove("visible");
+        modalSucursal.setAttribute("aria-hidden", "true");
+    }
+
+    function consultarSucursal(numeroWhatsApp, nombreSucursal) {
+        if (carrito.length === 0) {
+            cerrarModalSucursal();
+            alert("No hay productos en el presupuesto.");
+            return;
+        }
+
         const texto = generarTextoPresupuesto();
-        const url = "https://wa.me/5492212244033?text=" + encodeURIComponent(texto);
+        const textoConSucursal =
+            texto.replace(
+                "Hola! Quisiera consultar la disponibilidad de los siguientes productos para realizar una compra.",
+                "Hola! Quisiera consultar la disponibilidad de los siguientes productos para realizar una compra.\n\nSucursal: " + nombreSucursal
+            );
+
+        const url = "https://wa.me/" + numeroWhatsApp + "?text=" + encodeURIComponent(textoConSucursal);
+        cerrarModalSucursal();
         window.open(url, "_blank");
+    }
+
+    document.getElementById("btn-whatsapp").addEventListener("click", abrirModalSucursal);
+
+    btnCerrarModalSucursal.addEventListener("click", cerrarModalSucursal);
+
+    modalSucursal.addEventListener("click", function(e) {
+        if (e.target === modalSucursal) {
+            cerrarModalSucursal();
+        }
+    });
+
+    document.addEventListener("keydown", function(e) {
+        if (e.key === "Escape" && modalSucursal.classList.contains("visible")) {
+            cerrarModalSucursal();
+        }
+    });
+
+    btnLaPlata.addEventListener("click", function() {
+        consultarSucursal("5492212244033", "La Plata");
+    });
+
+    // IMPORTANTE: reemplazar este número por el WhatsApp real de City Bell.
+    btnCityBell.addEventListener("click", function() {
+        consultarSucursal("5492215703031", "City Bell");
     });
 
     // ---------------------------
